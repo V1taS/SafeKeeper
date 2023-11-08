@@ -1,0 +1,93 @@
+name: Build SafeKeeper
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    environment:
+      name: build_SafeKeeper
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up API keys
+      run: |
+        echo "API_KEY_YANDEX_METRICA=${{ secrets.API_KEY_YANDEX_METRICA }}" >> $GITHUB_ENV
+        echo "API_KEY_APPHUD=${{ secrets.API_KEY_APPHUD }}" >> $GITHUB_ENV
+        echo "FANCY_BACKEND=${{ secrets.FANCY_BACKEND }}" >> $GITHUB_ENV
+
+    - name: Import certificate and provisioning profiles
+      env:
+        SIGNING_CERTIFICATE: ${{ secrets.SIGNING_CERTIFICATE }}
+        IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+      run: |
+        echo "$SIGNING_CERTIFICATE" | base64 --decode > /tmp/Certificate.p12
+        echo "$IOS_PROVISIONING_PROFILE" | base64 --decode > /tmp/Profile.mobileprovision
+        security create-keychain -p "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
+        security default-keychain -s ~/Library/Keychains/build.keychain
+        security unlock-keychain -p "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
+        security set-keychain-settings -lut 3600 ~/Library/Keychains/build.keychain
+        security import /tmp/Certificate.p12 -k ~/Library/Keychains/build.keychain -P "" -T /usr/bin/codesign -A
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
+        CERTIFICATE_HASH=$(security find-identity -v -p codesigning | grep "$SIGNING_IDENTITY" | awk '{print $2}')
+        echo "CERTIFICATE_HASH=$CERTIFICATE_HASH" >> $GITHUB_ENV
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        PROVISIONING_PROFILE_UUID=$(grep -a -A 1 "UUID" /tmp/Profile.mobileprovision | tail -1 | awk -F '<string>' '{print $2}' | awk -F '</string>' '{print $1}')
+        cp /tmp/Profile.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision"
+        echo "PROVISIONING_PROFILE_UUID=$PROVISIONING_PROFILE_UUID" >> $GITHUB_ENV
+
+    - name: Set up Tuist
+      run: |
+        curl -Ls https://install.tuist.io | bash
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+
+    - name: Set up fastlane
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+
+    - name: Run Danger
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      run: bundle exec danger
+
+    - name: Tuist fetch
+      run: |
+        tuist fetch
+
+    - name: Tuist generate
+      run: |
+        tuist generate
+
+    # - name: Run tests
+    #   run: |
+    #     bundle exec fastlane test
+
+    - name: Build and archive the app
+      run: |
+        bundle exec fastlane build
+      env:
+        APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+        PROVISIONING_PROFILE_UUID: ${{ env.PROVISIONING_PROFILE_UUID }}
+
+    - name: Upload App build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: SafeKeeper
+        path: "SafeKeeper.ipa"
+
+    - name: Upload dSYM build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: SafeKeeper.app.dSYM
+        path: "SafeKeeper.app.dSYM.zip"
