@@ -19,7 +19,7 @@ public let bundleTest = "com.sosinvitalii.SafeKeeperTests"
 
 // Settings
 public let iOSversion = "16.0"
-public let provisioningProfileApp = "898f6150-92d5-431d-9d5b-5122a773727c"
+public let provisioningProfileApp = "92851f51-c40e-4fe1-8b77-37a1f34fde6f"
 public let developmentTeam = "34VDSPZYU9"
 public let codeSignIdentity = "Apple Distribution: Vitalii Sosin (34VDSPZYU9)"
 public let schemesURL = "SafeKeeper"
