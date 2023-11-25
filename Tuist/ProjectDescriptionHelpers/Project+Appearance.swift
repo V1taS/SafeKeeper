@@ -14,6 +14,7 @@ public let appName = "SafeKeeper"
 public let displayName = "Safe Keeper"
 public let rootPath = "SafeKeeper"
 public let appPath = "App"
+public let dependenciesPath = "Dependencies"
 public let bundle = "com.sosinvitalii.SafeKeeper"
 public let bundleTest = "com.sosinvitalii.SafeKeeperTests"
 

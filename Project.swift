@@ -7,6 +7,15 @@ let project = Project(
   name: appName,
   organizationName: organizationName,
   options: .options(automaticSchemesOptions: .disabled),
+  packages: [
+    .local(path: .relativeToRoot("\(dependenciesPath)/FancyFoundation")),
+    .local(path: .relativeToRoot("\(dependenciesPath)/FancyKit")),
+    .local(path: .relativeToRoot("\(dependenciesPath)/FancyNetwork")),
+    .local(path: .relativeToRoot("\(dependenciesPath)/FancyNotifications")),
+    .local(path: .relativeToRoot("\(dependenciesPath)/FancyStyle")),
+    .remote(url: "https://github.com/pointfreeco/swift-composable-architecture",
+            requirement: .exact("1.4.2"))
+  ],
   settings: projectBuildIOSSettings,
   targets: [
     Target(
@@ -22,25 +31,17 @@ let project = Project(
       resources: [
         "\(rootPath)/\(appPath)/Resources/**/*",
       ],
-      entitlements: .relativeToRoot("\(rootPath)/\(appPath)/Entity/\(appName).entitlements"),
+      entitlements: .file(path: .relativeToRoot("\(rootPath)/\(appPath)/Entity/\(appName).entitlements")),
       scripts: [
         scriptSwiftLint
       ],
       dependencies: [
-        .external(name: "FancySwiftUI"),
-        //        .external(name: "FancyNetwork"),
-        //        .external(name: "FancyNotifications"),
-        //        .external(name: "ApphudSDK"),
-        //        .external(name: "KeychainSwift"),
-        //        .external(name: "YandexMobileMetricaPush"),
-        //        .external(name: "YandexMobileMetrica"),
-        //        .external(name: "FirebaseDynamicLinks"),
-        //        .external(name: "FirebaseAnalytics"),
-        //        .external(name: "FirebaseFirestore"),
-        //        .external(name: "FirebaseAuth"),
-        //        .external(name: "FirebaseRemoteConfig"),
-        //        .external(name: "GoogleMobileAds"),
-          .external(name: "ComposableArchitecture")
+        .package(product: "FancyFoundation"),
+        .package(product: "FancyKit"),
+        .package(product: "FancyNetwork"),
+        .package(product: "FancyNotifications"),
+        .package(product: "FancyStyle"),
+        .package(product: "ComposableArchitecture", type: .macro)
       ],
       settings: targetBuildIOSSettings
     ),
@@ -55,7 +56,7 @@ let project = Project(
         "\(rootPath)/\(appPath)/Tests/**/*"
       ],
       dependencies: [
-        .target(name: "\(appName)"),
+        .target(name: "\(appName)")
       ],
       settings: targetBuildTestsSettings
     )
