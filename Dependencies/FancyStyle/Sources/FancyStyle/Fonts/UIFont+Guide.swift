@@ -4,19 +4,18 @@
 //  Created by Vitalii Sosin on 01.05.2022.
 //
 
-import UIKit
+import SwiftUI
 
 /// Расширение для `UIFont`
 public extension UIFont {
   
-  /// Список цветов `RandomFont`
-  class var fancy: FontGuide { fontGuide }
+  /// Список шрифтов
+  class var fancy: UIFontGuide { UIFontGuide() }
 }
 
-// MARK: - Public property
-
-public var fancyFont: FontGuide { fontGuide }
-
-// MARK: - Private property
-
-private let fontGuide = FontGuide()
+/// Расширение для `Font`
+public extension Font {
+  
+  /// Список шрифтов
+  static var fancy: FontGuide { FontGuide() }
+}

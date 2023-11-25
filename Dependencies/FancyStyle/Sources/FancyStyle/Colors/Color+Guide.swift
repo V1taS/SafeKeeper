@@ -11,14 +11,13 @@ import SwiftUI
 public extension Color {
   
   /// Список цветов `Fancy`
-  static var fancy: ColorGuideSUI { colorGuide }
+  static var fancy: ColorGuide { colorGuide }
 }
 
 // MARK: - Public property
 
-public var fancyColorSUI: ColorGuideSUI { colorGuide }
+public var fancyColor: ColorGuide { colorGuide }
 
 // MARK: - Private property
 
-private let colorGuide = ColorGuideSUI(darkAndLightTheme: ColorGuideSUI.DarkAndLightTheme(),
-                                       only: ColorGuideSUI.Only())
+private let colorGuide = ColorGuide(dynamic: ColorGuide.Dynamic(), constant: ColorGuide.Constant())
