@@ -1,5 +1,5 @@
 //
-//  Font+Example.swift
+//  FontExample.swift
 //
 //
 //  Created by Vitalii Sosin on 25.11.2023.

@@ -1,5 +1,5 @@
 //
-//  Size+Example.swift
+//  SizeExample.swift
 //
 //
 //  Created by Vitalii Sosin on 25.11.2023.

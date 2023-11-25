@@ -1,5 +1,5 @@
 //
-//  Color+Example.swift
+//  ColorExample.swift
 //
 //
 //  Created by Vitalii Sosin on 25.11.2023.
