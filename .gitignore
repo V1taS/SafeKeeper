@@ -45,7 +45,7 @@ Pods/
  *.xcworkspace
 
 # Accio dependency management
-Dependencies/
+Tuist/Dependencies/
 .accio/
 
 # fastlane
