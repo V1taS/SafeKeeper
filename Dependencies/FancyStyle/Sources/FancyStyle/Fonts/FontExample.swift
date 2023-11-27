@@ -24,8 +24,10 @@ struct FontExample: View {
 
 // MARK: - Preview
 
-#Preview {
-  FontExample()
+struct FontExample_Previews: PreviewProvider {
+  static var previews: some View {
+    FontExample()
+  }
 }
 
 // MARK: - Constants

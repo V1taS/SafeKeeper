@@ -24,8 +24,10 @@ struct SizeExample: View {
 
 // MARK: - Preview
 
-#Preview {
-  SizeExample()
+struct SizeExample_Previews: PreviewProvider {
+  static var previews: some View {
+    SizeExample()
+  }
 }
 
 // MARK: - Constants

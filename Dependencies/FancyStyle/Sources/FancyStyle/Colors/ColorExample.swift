@@ -29,8 +29,10 @@ struct ColorExample: View {
 
 // MARK: - Preview
 
-#Preview {
-  ColorExample()
+struct ColorExample_Previews: PreviewProvider {
+  static var previews: some View {
+    ColorExample()
+  }
 }
 
 // MARK: - Constants
