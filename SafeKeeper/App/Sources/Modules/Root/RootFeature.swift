@@ -17,6 +17,8 @@ struct RootFeature: Reducer {
     case incrementButtonTapped
   }
   
+  @Dependency(\.dataManager.save) var saveData
+  
   func reduce(into state: inout State, action: Action) -> Effect<Action> {
     switch action {
     case .decrementButtonTapped:
