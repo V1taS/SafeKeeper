@@ -12,11 +12,15 @@ let package = Package(
       targets: ["FancyKit"]
     ),
   ],
-  dependencies: [],
+  dependencies: [
+    .package(path: "Dependencies/FancyStyle")
+  ],
   targets: [
     .target(
       name: "FancyKit",
-      dependencies: []
+      dependencies: [
+        .product(name: "FancyStyle", package: "FancyStyle")
+      ]
     ),
   ]
 )

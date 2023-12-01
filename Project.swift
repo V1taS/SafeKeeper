@@ -40,7 +40,6 @@ let project = Project(
         .package(product: "FancyKit"),
         .package(product: "FancyNetwork"),
         .package(product: "FancyNotifications"),
-        .package(product: "FancyStyle"),
         .package(product: "ComposableArchitecture", type: .macro)
       ],
       settings: targetBuildIOSSettings
