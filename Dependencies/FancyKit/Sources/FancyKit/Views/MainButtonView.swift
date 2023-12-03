@@ -72,7 +72,32 @@ public struct MainButtonView: View {
   // MARK: - Body
   
   public var body: some View {
-    Button(action: action) {
+    ZStack {
+      LinearGradient(
+        gradient: Gradient(
+          colors: isEnabled ? style.enabledColors : style.disabledColors
+        ),
+        startPoint: .leading,
+        endPoint: .trailing
+      )
+      .clipShape(RoundedRectangle(cornerRadius: .s4))
+      .frame(height: .s13)
+      .disabled(!isEnabled)
+      .onLongPressGesture(
+        minimumDuration: .infinity,
+        maximumDistance: .infinity,
+        pressing: { isPressing in
+          if isEnabled {
+            withAnimation(.easeInOut(duration: 0.2)) {
+              isPressed = isPressing
+            }
+          }
+        },
+        perform: {
+          action()
+        }
+      )
+      
       Text(text)
         .font(.fancy.h3)
         .fontWeight(.semibold)
@@ -82,31 +107,8 @@ public struct MainButtonView: View {
         .lineLimit(Constants.lineLimit)
         .truncationMode(.tail)
     }
-    .background(
-      LinearGradient(
-        gradient: Gradient(
-          colors: isEnabled ? style.enabledColors : style.disabledColors
-        ),
-        startPoint: .leading,
-        endPoint: .trailing
-      )
-    )
-    .cornerRadius(.s4)
-    .disabled(!isEnabled)
     .scaleEffect(isPressed ? 0.96 : 1.0)
     .animation(.easeInOut(duration: 0.2), value: isPressed)
-    .onLongPressGesture(
-      minimumDuration: .infinity,
-      maximumDistance: .infinity,
-      pressing: { isPressing in
-        if isEnabled {
-          withAnimation(.easeInOut(duration: 0.2)) {
-            isPressed = isPressing
-          }
-        }
-      },
-      perform: {}
-    )
   }
 }
 
