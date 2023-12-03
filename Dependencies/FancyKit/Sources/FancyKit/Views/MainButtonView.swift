@@ -139,7 +139,6 @@ private enum Constants {
 
 // MARK: - Preview
 
-@available(iOS 14.0, *)
 struct MainButtonView_Previews: PreviewProvider {
   static var previews: some View {
     VStack {

@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
   name: "FancyKit",
-  platforms: [.iOS(.v13)],
+  platforms: [.iOS(.v16)],
   products: [
     .library(
       name: "FancyKit",

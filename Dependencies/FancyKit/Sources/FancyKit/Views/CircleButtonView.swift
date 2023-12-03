@@ -123,7 +123,6 @@ private enum Constants {
 
 // MARK: - Preview
 
-@available(iOS 14.0, *)
 struct CircleButtonView_Previews: PreviewProvider {
   static var previews: some View {
     ZStack {
