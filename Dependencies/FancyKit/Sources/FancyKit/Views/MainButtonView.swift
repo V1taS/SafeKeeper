@@ -51,6 +51,7 @@ public struct MainButtonView: View {
   private let style: Style
   @State private var isPressed = false
   private let action: () -> Void
+  private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
   
@@ -95,6 +96,7 @@ public struct MainButtonView: View {
         },
         perform: {
           action()
+          impactFeedback.impactOccurred()
         }
       )
       
@@ -111,6 +113,8 @@ public struct MainButtonView: View {
     .animation(.easeInOut(duration: 0.2), value: isPressed)
   }
 }
+
+// MARK: - Constants
 
 private enum Constants {
   static let primaryEnabledColors: [Color] = [
