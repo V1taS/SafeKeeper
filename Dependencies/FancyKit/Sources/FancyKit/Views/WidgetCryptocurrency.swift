@@ -21,7 +21,7 @@ public struct WidgetCryptocurrency: View {
   /// Инициализатор для создания виджета с криптовалютой
   /// - Parameters:
   ///   - text: Текст, который будет отображаться на кнопке
-  init(models: Binding<[WidgetCryptocurrency.Model]>) {
+  public init(models: Binding<[WidgetCryptocurrency.Model]>) {
     self._models = models
   }
   

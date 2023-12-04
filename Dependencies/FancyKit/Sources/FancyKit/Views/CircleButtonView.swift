@@ -47,12 +47,13 @@ public struct CircleButtonView: View {
   /// Инициализатор для создания круглой кнопки
   /// - Parameters:
   ///   - text: Текст, который будет отображаться под кнопкой
-  ///   - state: Состояние кнопки, которое может быть `.enabled` (включено) или `.disabled` (выключено). По умолчанию состояние `.enabled`
+  ///   - style: Стиль кнопки
+  ///   - isEnabled: Кнопка включена
   ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
-  init(text: String,
-       style: CircleButtonView.Style,
-       isEnabled: Binding<Bool> = .constant(true),
-       action: @escaping () -> Void) {
+  public init(text: String,
+              style: CircleButtonView.Style,
+              isEnabled: Binding<Bool> = .constant(true),
+              action: @escaping () -> Void) {
     self.text = text
     self.style = style
     self._isEnabled = isEnabled

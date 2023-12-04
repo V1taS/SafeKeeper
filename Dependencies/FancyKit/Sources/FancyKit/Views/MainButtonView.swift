@@ -58,12 +58,13 @@ public struct MainButtonView: View {
   /// Инициализатор для создания основной кнопки
   /// - Parameters:
   ///   - text: Текст, который будет отображаться на кнопке
-  ///   - state: Состояние кнопки, которое может быть `.enabled` (включено) или `.disabled` (выключено). По умолчанию состояние `.enabled`
+  ///   - style: Стиль кнопки
+  ///   - isEnabled: Кнопка включена
   ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
-  init(text: String,
-       style: MainButtonView.Style = .primary,
-       isEnabled: Binding<Bool> = .constant(true),
-       action: @escaping () -> Void) {
+  public init(text: String,
+              style: MainButtonView.Style = .primary,
+              isEnabled: Binding<Bool> = .constant(true),
+              action: @escaping () -> Void) {
     self.text = text
     self.style = style
     self._isEnabled = isEnabled
