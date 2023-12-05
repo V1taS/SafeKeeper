@@ -30,13 +30,10 @@ public struct CircleButtonView: View {
     case receive
   }
   
-  // MARK: - Public properties
-  
-  @Binding public var isEnabled: Bool
-  
   // MARK: - Private properties
   
   @State private var isPressed = false
+  @Binding private var isEnabled: Bool
   private let text: String
   private let style: Style
   private let action: () -> Void

@@ -8,6 +8,7 @@
 import SwiftUI
 import FancyStyle
 
+// TODO: - Добавить в правом нижнем углу счетчик символов
 public struct InputView: View {
   
   // MARK: - Style
@@ -33,16 +34,16 @@ public struct InputView: View {
     case none
   }
   
-  // MARK: - Public properties
-  
-  @Binding public var isEnabled: Bool
-  
   // MARK: - Private properties
   
-  @FocusState private var isTextFieldFocused: Bool
-  @Binding private var text: String
   private let style: Style
   private let placeholder: String
+  private let keyboardType: UIKeyboardType
+  private let maxLength: Int
+  @Binding private var isEnabled: Bool
+  @Binding private var text: String
+  @Binding private var isError: Bool
+  @FocusState private var isTextFieldFocused: Bool
   
   // MARK: - Initialization
   
@@ -51,15 +52,24 @@ public struct InputView: View {
   ///   - text: Текст, который будет помещен в текстовое поле
   ///   - placeholder: Подсказка для ввода
   ///   - style: Стиль текстового ввода
+  ///   - keyboardType: Стиль клавиатуры
   ///   - isEnabled: Текстовое поле включено
+  ///   - maxLength: Максимальная длина символов
+  ///   - isError: Ошибка в поле
   public init(text: Binding<String> = .constant(""),
               placeholder: String = "",
               style: InputView.Style,
-              isEnabled: Binding<Bool> = .constant(true)) {
+              keyboardType: UIKeyboardType = .default,
+              isEnabled: Binding<Bool> = .constant(true),
+              maxLength: Int = 100,
+              isError: Binding<Bool> = .constant(false)) {
     self._text = text
     self.placeholder = placeholder
     self.style = style
+    self.keyboardType = keyboardType
     self._isEnabled = isEnabled
+    self.maxLength = maxLength
+    self._isError = isError
   }
   
   // MARK: - Body
@@ -88,14 +98,21 @@ public struct InputView: View {
           }
           
           TextField("", text: $text,  axis: .vertical)
+            .onChange(of: text) { newValue in
+              if newValue.count > maxLength {
+                text = String(newValue.prefix(maxLength))
+              }
+            }
             .focused($isTextFieldFocused)
+            .autocorrectionDisabled(true)
+            .keyboardType(keyboardType)
             .disabled(!isEnabled)
             .padding(.vertical, .s1)
             .lineLimit(Constants.lineLimit)
             .font(.fancy.b1)
             .fontWeight(.semibold)
             .foregroundColor(.fancy.constant.ghost)
-            .accentColor(.fancy.constant.azure)
+            .accentColor(isError ? .fancy.constant.ruby : .fancy.constant.azure)
             .truncationMode(.tail)
             .padding(.bottom, .s4)
             .padding(.top, style.isTopHelper ? .zero : .s4)
@@ -127,8 +144,11 @@ public struct InputView: View {
     .background(Color.fancy.constant.navy)
     .overlay(
       RoundedRectangle(cornerRadius: .s5)
-        .stroke(isTextFieldFocused ? Color.fancy.constant.azure : Color.clear,
-                lineWidth: .s1 / 1.5)
+        .stroke(
+          isError ? .fancy.constant.ruby :
+            isTextFieldFocused ? Color.fancy.constant.azure : Color.clear,
+          lineWidth: .s1 / 1.5
+        )
     )
     .clipShape(RoundedRectangle(cornerRadius: .s5))
   }
@@ -165,20 +185,35 @@ struct InputView_Previews: PreviewProvider {
   static var previews: some View {
     VStack(spacing: .s4) {
       Spacer()
-      InputView(text: .constant(""),
-                placeholder: "Hello world",
-                style: .none,
-                isEnabled: .constant(true))
+      InputView(
+        text: .constant(""),
+        placeholder: "Input view one",
+        style: .none,
+        keyboardType: .default,
+        isEnabled: .constant(true),
+        maxLength: 7,
+        isError: .constant(false)
+      )
       
-      InputView(text: .constant(""),
-                placeholder: "Hello world",
-                style: .leftHelper(text: "22:"),
-                isEnabled: .constant(true))
+      InputView(
+        text: .constant(""),
+        placeholder: "Input view two",
+        style: .leftHelper(text: "22:"),
+        keyboardType: .numberPad,
+        isEnabled: .constant(true),
+        maxLength: 20,
+        isError: .constant(false)
+      )
       
-      InputView(text: .constant(""),
-                placeholder: "Hello world",
-                style: .topHelper(text: "Comments"),
-                isEnabled: .constant(true))
+      InputView(
+        text: .constant(""),
+        placeholder: "Input view one",
+        style: .topHelper(text: "Comments"),
+        keyboardType: .default,
+        isEnabled: .constant(true),
+        maxLength: 7,
+        isError: .constant(true)
+      )
       Spacer()
     }
     .padding(.horizontal)

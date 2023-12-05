@@ -41,15 +41,12 @@ public struct MainButtonView: View {
     case secondary
   }
   
-  // MARK: - Public properties
-  
-  @Binding public var isEnabled: Bool
-  
   // MARK: - Private properties
   
   private let text: String
   private let style: Style
   @State private var isPressed = false
+  @Binding private var isEnabled: Bool
   private let action: () -> Void
   private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
