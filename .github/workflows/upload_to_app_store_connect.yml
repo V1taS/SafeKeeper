@@ -9,149 +9,150 @@ jobs:
   upload_to_app_store_connect:
     runs-on: macos-latest
     if: "!contains(github.event.head_commit.message, 'Update versions')"
-
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      
-    - name: Set up API keys
-      run: |
-        echo "API_KEY_YANDEX_METRICA=${{ secrets.API_KEY_YANDEX_METRICA }}" >> $GITHUB_ENV
-        echo "API_KEY_APPHUD=${{ secrets.API_KEY_APPHUD }}" >> $GITHUB_ENV
-        echo "FANCY_BACKEND=${{ secrets.FANCY_BACKEND }}" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.x
+      - name: Set up API keys
+        run: |
+          echo "API_KEY_YANDEX_METRICA=${{ secrets.API_KEY_YANDEX_METRICA }}" >> $GITHUB_ENV
+          echo "API_KEY_APPHUD=${{ secrets.API_KEY_APPHUD }}" >> $GITHUB_ENV
+          echo "FANCY_BACKEND=${{ secrets.FANCY_BACKEND }}" >> $GITHUB_ENV
 
-    - name: Set up Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install python-telegram-bot
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.x
 
-    - name: Import certificate and provisioning profiles
-      env:
-        SIGNING_CERTIFICATE: ${{ secrets.SIGNING_CERTIFICATE }}
-        IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
-        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
-      run: |
-        echo "$SIGNING_CERTIFICATE" | base64 --decode > /tmp/Certificate.p12
-        echo "$IOS_PROVISIONING_PROFILE" | base64 --decode > /tmp/Profile.mobileprovision
-        security create-keychain -p "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
-        security default-keychain -s ~/Library/Keychains/build.keychain
-        security unlock-keychain -p "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
-        security set-keychain-settings -lut 3600 ~/Library/Keychains/build.keychain
-        security import /tmp/Certificate.p12 -k ~/Library/Keychains/build.keychain -P "" -T /usr/bin/codesign -A
-        security set-key-partition-list -S apple-tool:,apple: -s -k "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
-        CERTIFICATE_HASH=$(security find-identity -v -p codesigning | grep "$SIGNING_IDENTITY" | awk '{print $2}')
-        echo "CERTIFICATE_HASH=$CERTIFICATE_HASH" >> $GITHUB_ENV
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        PROVISIONING_PROFILE_UUID=$(grep -a -A 1 "UUID" /tmp/Profile.mobileprovision | tail -1 | awk -F '<string>' '{print $2}' | awk -F '</string>' '{print $1}')
-        cp /tmp/Profile.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision"
-        echo "PROVISIONING_PROFILE_UUID=$PROVISIONING_PROFILE_UUID" >> $GITHUB_ENV
+      - name: Set up Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-telegram-bot
 
-    - name: Set up Tuist
-      run: |
-        curl -Ls https://install.tuist.io | bash
+      - name: Import certificate and provisioning profiles
+        env:
+          SIGNING_CERTIFICATE: ${{ secrets.SIGNING_CERTIFICATE }}
+          IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY }}
+        run: |
+          echo "$SIGNING_CERTIFICATE" | base64 --decode > /tmp/Certificate.p12
+          echo "$IOS_PROVISIONING_PROFILE" | base64 --decode > /tmp/Profile.mobileprovision
+          security create-keychain -p "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
+          security default-keychain -s ~/Library/Keychains/build.keychain
+          security unlock-keychain -p "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
+          security set-keychain-settings -lut 3600 ~/Library/Keychains/build.keychain
+          security import /tmp/Certificate.p12 -k ~/Library/Keychains/build.keychain -P "" -T /usr/bin/codesign -A
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$MATCH_PASSWORD" ~/Library/Keychains/build.keychain
+          CERTIFICATE_HASH=$(security find-identity -v -p codesigning | grep "$SIGNING_IDENTITY" | awk '{print $2}')
+          echo "CERTIFICATE_HASH=$CERTIFICATE_HASH" >> $GITHUB_ENV
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          PROVISIONING_PROFILE_UUID=$(grep -a -A 1 "UUID" /tmp/Profile.mobileprovision | tail -1 | awk -F '<string>' '{print $2}' | awk -F '</string>' '{print $1}')
+          cp /tmp/Profile.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision"
+          echo "PROVISIONING_PROFILE_UUID=$PROVISIONING_PROFILE_UUID" >> $GITHUB_ENV
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.7
+      - name: Set up Tuist
+        run: |
+          curl -Ls https://install.tuist.io | bash
 
-    - name: Set up fastlane
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
 
-    - name: Tuist fetch
-      run: |
-        tuist fetch
+      - name: Set up fastlane
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
 
-    - name: Download App versions from SosinVitalii.com server
-      run: |
-        curl --ssl-reqd --insecure --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }} -O "ftp://${{ secrets.FTP_SERVER }}/SafeKeeper_versions.json"
+      - name: Tuist fetch
+        run: |
+          tuist fetch
 
-    - name: Increase App version and build number
-      run: |
-        python Scripts/update_version_and_build_number.py
+      - name: Download App versions from SosinVitalii.com server
+        run: |
+          curl --ssl-reqd --insecure --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }} -O "ftp://${{ secrets.FTP_SERVER }}/SafeKeeper_versions.json"
 
-    - name: Update marketing and current project version in Project
-      run: |
-        python Scripts/update_appearance_versions.py
+      - name: Increase App version and build number
+        run: |
+          python Scripts/update_version_and_build_number.py
 
-    - name: Upload App versions to SosinVitalii.com server
-      run: |
-        curl --ssl-reqd --insecure --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }} -T "./SafeKeeper_versions.json" "ftp://${{ secrets.FTP_SERVER }}/SafeKeeper_versions.json"
+      - name: Update marketing and current project version in Project
+        run: |
+          python Scripts/update_appearance_versions.py
 
-    - name: Tuist generate
-      run: |
-        tuist generate
+      - name: Upload App versions to SosinVitalii.com server
+        run: |
+          curl --ssl-reqd --insecure --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }} -T "./SafeKeeper_versions.json" "ftp://${{ secrets.FTP_SERVER }}/SafeKeeper_versions.json"
 
-    - name: Build and archive the app
-      run: |
-        bundle exec fastlane build
-      env:
-        APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
-        PROVISIONING_PROFILE_UUID: ${{ env.PROVISIONING_PROFILE_UUID }}
+      - name: Tuist generate
+        run: |
+          tuist generate
 
-    - name: Upload App build artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: SafeKeeper
-        path: "SafeKeeper.ipa"
+      - name: Build and archive the app
+        run: |
+          bundle exec fastlane build
+        env:
+          APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+          PROVISIONING_PROFILE_UUID: ${{ env.PROVISIONING_PROFILE_UUID }}
 
-    - name: Upload dSYM build artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: SafeKeeper.app.dSYM
-        path: "SafeKeeper.app.dSYM.zip"
+      - name: Upload App build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SafeKeeper
+          path: "SafeKeeper.ipa"
 
-    - name: Upload to App Store Connect
-      run: |
-        bundle exec fastlane upload_app_to_app_store
-      env:
-        APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-        APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
-        APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
-        PROVISIONING_PROFILE_UUID: ${{ env.PROVISIONING_PROFILE_UUID }}
-        APPLE_ID: ${{ secrets.APPLE_ID }}
-        APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
-        APP_STORE_CONNECT_TEAM_NAME: ${{ secrets.APP_STORE_CONNECT_TEAM_NAME }}
-        ITC_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
-        ITC_TEAM_NAME: ${{ secrets.APP_STORE_CONNECT_TEAM_NAME }}
-        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      - name: Upload dSYM build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SafeKeeper.app.dSYM
+          path: "SafeKeeper.app.dSYM.zip"
 
-    - name: Clean up App Store Connect API key
-      run: |
-        rm -f /tmp/AuthKey.p8
+      - name: Upload to App Store Connect
+        run: |
+          bundle exec fastlane upload_app_to_app_store
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+          APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+          PROVISIONING_PROFILE_UUID: ${{ env.PROVISIONING_PROFILE_UUID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
+          APP_STORE_CONNECT_TEAM_NAME: ${{ secrets.APP_STORE_CONNECT_TEAM_NAME }}
+          ITC_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
+          ITC_TEAM_NAME: ${{ secrets.APP_STORE_CONNECT_TEAM_NAME }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
 
-    - name: Get MARKETING_VERSION and CURRENT_PROJECT_VERSION
-      run: |
-        echo "MARKETING_VERSION=$(jq -r '.marketing_version' SafeKeeper_versions.json)" >> $GITHUB_ENV
-        echo "CURRENT_PROJECT_VERSION=$(jq -r '.current_project_version' SafeKeeper_versions.json)" >> $GITHUB_ENV
+      - name: Clean up App Store Connect API key
+        run: |
+          rm -f /tmp/AuthKey.p8
 
-    - name: Create and push Release git tag
-      run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "GitHub Actions Bot"
-        git checkout ${GITHUB_HEAD_REF}
-        git tag "${{ env.MARKETING_VERSION }}"
-        git push --tags
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      - name: Get MARKETING_VERSION and CURRENT_PROJECT_VERSION
+        run: |
+          echo "MARKETING_VERSION=$(jq -r '.marketing_version' SafeKeeper_versions.json)" >> $GITHUB_ENV
+          echo "CURRENT_PROJECT_VERSION=$(jq -r '.current_project_version' SafeKeeper_versions.json)" >> $GITHUB_ENV
 
-    # - name: Send Telegram notification "New Release"
-    #   env:
-    #     TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-    #     TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-    #   run: |
-    #     python Scripts/send_telegram.py "😍 Release iOS ${{ env.MARKETING_VERSION }} 😍
-    #     Автор: ${{ github.actor }}
-    #     Сборка №: ${{ env.MARKETING_VERSION }}/${{ env.CURRENT_PROJECT_VERSION }}
-        
-    #     Для тестирования релизных сборок отправьте свой Apple ID (example@iCloud.com) пользователю @V1taS
-    #     "
+      - name: Create and push Release git tag
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git checkout ${GITHUB_HEAD_REF}
+          git tag "${{ env.MARKETING_VERSION }}"
+          git push --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+      - name: Send Telegram notification "New Release"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python Scripts/send_telegram.py "🪙 Release SafeKeeper iOS ${{ env.MARKETING_VERSION }} 🪙
+          Автор: ${{ github.actor }}
+          Сборка №: ${{ env.MARKETING_VERSION }}/${{ env.CURRENT_PROJECT_VERSION }}
+          Проект: https://github.com/V1taS/SafeKeeper
+          
+          Для тестирования релизных сборок отправьте свой Apple ID (example@iCloud.com) пользователю @V1taS
+          "
