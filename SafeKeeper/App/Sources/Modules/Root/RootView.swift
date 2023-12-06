@@ -81,13 +81,31 @@ struct RootView: View {
           .padding(.top)
           
           Group {
-            WidgetCryptocurrency(models: .constant([
+            WidgetCryptocurrencyView(models: .constant([
               .init(
                 name: "Toncoin",
                 imageData: Constants.mockImageData,
                 totalCrypto: "62,93",
                 totalCurrency: "152 $",
                 currentPriceCryptoInCurrency: "2,41 $",
+                isSelectable: true,
+                action: {}
+              ),
+              .init(
+                name: "Bitcoin",
+                imageData: Constants.mockImageData,
+                totalCrypto: "30,93",
+                totalCurrency: "52 $",
+                currentPriceCryptoInCurrency: "1,41 $",
+                isSelectable: true,
+                action: {}
+              ),
+              .init(
+                name: "Bitcoin",
+                imageData: Constants.mockImageData,
+                totalCrypto: "30,93",
+                totalCurrency: "52 $",
+                currentPriceCryptoInCurrency: "1,41 $",
                 isSelectable: true,
                 action: {}
               ),
@@ -122,6 +140,7 @@ struct RootView: View {
             }
           }
           .padding(.top)
+          Spacer()
         }
         .padding(.top, .s26)
       }

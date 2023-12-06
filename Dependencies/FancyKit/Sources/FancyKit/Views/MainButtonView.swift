@@ -89,23 +89,25 @@ public struct MainButtonView: View {
           if isEnabled {
             withAnimation(.easeInOut(duration: 0.2)) {
               isPressed = isPressing
+              
+              if !isPressing {
+                impactFeedback.impactOccurred()
+                action()
+              }
             }
           }
         },
-        perform: {
-          action()
-          impactFeedback.impactOccurred()
-        }
+        perform: {}
       )
       
       Text(text)
         .font(.fancy.h3)
-        .fontWeight(.semibold)
         .foregroundColor(.fancy.constant.ghost)
         .padding(.s4)
         .frame(maxWidth: .infinity)
         .lineLimit(Constants.lineLimit)
         .truncationMode(.tail)
+        .allowsHitTesting(false)
     }
     .scaleEffect(isPressed ? 0.96 : 1.0)
     .animation(.easeInOut(duration: 0.2), value: isPressed)

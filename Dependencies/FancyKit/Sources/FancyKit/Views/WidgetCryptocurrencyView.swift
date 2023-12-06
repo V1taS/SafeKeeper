@@ -1,5 +1,5 @@
 //
-//  WidgetCryptocurrency.swift
+//  WidgetCryptocurrencyView.swift
 //
 //
 //  Created by Vitalii Sosin on 03.12.2023.
@@ -8,12 +8,13 @@
 import SwiftUI
 import FancyStyle
 
-public struct WidgetCryptocurrency: View {
+// TODO: - Плохо работает скрол из-за обработок событий, надо разобраться с этим
+public struct WidgetCryptocurrencyView: View {
   
   // MARK: - Private properties
   
-  @Binding private var models: [WidgetCryptocurrency.Model]
-  @State private var isPressed = false
+  @Binding private var models: [WidgetCryptocurrencyView.Model]
+  @State private var pressedStates: [UUID: Bool] = [:]
   private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
@@ -21,7 +22,7 @@ public struct WidgetCryptocurrency: View {
   /// Инициализатор для создания виджета с криптовалютой
   /// - Parameters:
   ///   - text: Текст, который будет отображаться на кнопке
-  public init(models: Binding<[WidgetCryptocurrency.Model]>) {
+  public init(models: Binding<[WidgetCryptocurrencyView.Model]>) {
     self._models = models
   }
   
@@ -32,6 +33,7 @@ public struct WidgetCryptocurrency: View {
       LazyVStack(alignment: .center, spacing: .zero) {
         ForEach(Array(models.enumerated()), id: \.element.id) { index, model in
           createWidgetCryptocurrency(model: model)
+            .opacity(pressedStates[model.id, default: false] ? 0.85 : 1)
           
           if models.count > 1 && models.count - 1 != index {
             Color.fancy.constant.slate.opacity(0.3)
@@ -46,8 +48,8 @@ public struct WidgetCryptocurrency: View {
 
 // MARK: - Private
 
-private extension WidgetCryptocurrency {
-  func createWidgetCryptocurrency(model: WidgetCryptocurrency.Model) -> AnyView {
+private extension WidgetCryptocurrencyView {
+  func createWidgetCryptocurrency(model: WidgetCryptocurrencyView.Model) -> AnyView {
     AnyView(
       ZStack {
         Color.fancy.constant.navy
@@ -57,13 +59,15 @@ private extension WidgetCryptocurrency {
             maximumDistance: .infinity,
             pressing: { isPressing in
               if model.isSelectable {
-                isPressed = isPressing
+                pressedStates[model.id] = isPressing
+                
+                if !isPressing {
+                  impactFeedback.impactOccurred()
+                  model.action()
+                }
               }
             },
-            perform: {
-              model.action()
-              impactFeedback.impactOccurred()
-            }
+            perform: {}
           )
         
         HStack(spacing: .s4) {
@@ -71,14 +75,15 @@ private extension WidgetCryptocurrency {
             .resizable()
             .frame(width: .s11, height: .s11)
             .clipShape(Circle())
+            .allowsHitTesting(false)
           
           VStack(alignment: .leading, spacing: .s1) {
             Text(model.name)
               .font(.fancy.h3)
-              .fontWeight(.semibold)
               .foregroundColor(.fancy.constant.ghost)
               .lineLimit(Constants.lineLimit)
               .truncationMode(.tail)
+              .allowsHitTesting(false)
             
             HStack {
               Text(model.currentPriceCryptoInCurrency)
@@ -86,6 +91,7 @@ private extension WidgetCryptocurrency {
                 .foregroundColor(.fancy.constant.slate)
                 .lineLimit(Constants.lineLimit)
                 .truncationMode(.tail)
+                .allowsHitTesting(false)
               Spacer()
             }
           }
@@ -95,10 +101,10 @@ private extension WidgetCryptocurrency {
           VStack(alignment: .trailing, spacing: .s1) {
             Text(model.totalCrypto)
               .font(.fancy.h3)
-              .fontWeight(.semibold)
               .foregroundColor(.fancy.constant.ghost)
               .lineLimit(Constants.lineLimit)
               .truncationMode(.tail)
+              .allowsHitTesting(false)
             
             HStack {
               Spacer()
@@ -107,19 +113,19 @@ private extension WidgetCryptocurrency {
                 .foregroundColor(.fancy.constant.slate)
                 .lineLimit(Constants.lineLimit)
                 .truncationMode(.tail)
+                .allowsHitTesting(false)
             }
           }
         }
         .padding(.s4)
       }
-        .animation(.easeInOut(duration: 0.2), value: isPressed)
     )
   }
 }
 
 // MARK: - Model
 
-extension WidgetCryptocurrency {
+extension WidgetCryptocurrencyView {
   public struct Model: Identifiable {
     
     /// ID для модельки
@@ -184,10 +190,10 @@ private enum Constants {
 
 // MARK: - Preview
 
-struct WidgetCryptocurrency_Previews: PreviewProvider {
+struct WidgetCryptocurrencyView_Previews: PreviewProvider {
   static var previews: some View {
     VStack {
-      WidgetCryptocurrency(models: .constant([
+      WidgetCryptocurrencyView(models: .constant([
         .init(
           name: "Toncoin",
           imageData: Constants.mockImageData,

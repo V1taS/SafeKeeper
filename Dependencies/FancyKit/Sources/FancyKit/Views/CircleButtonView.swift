@@ -65,12 +65,12 @@ public struct CircleButtonView: View {
       
       Text(text)
         .font(.fancy.b1)
-        .fontWeight(.semibold)
-        .foregroundColor(.fancy.constant.ghost)
+        .foregroundColor(.fancy.constant.slate)
         .frame(maxWidth: .s17)
         .lineLimit(Constants.lineLimit)
         .truncationMode(.tail)
         .padding(.top, .s1)
+        .allowsHitTesting(false)
     }
   }
 }
@@ -93,19 +93,22 @@ private extension CircleButtonView {
               if isEnabled {
                 withAnimation(.easeInOut(duration: 0.2)) {
                   isPressed = isPressing
+                  
+                  if !isPressing {
+                    impactFeedback.impactOccurred()
+                    action()
+                  }
                 }
               }
             },
-            perform: {
-              action()
-              impactFeedback.impactOccurred()
-            }
+            perform: {}
           )
         
         Image(systemName: style.imageSystemName)
           .imageScale(.large)
           .font(.fancy.h3)
           .foregroundColor(.fancy.constant.ghost)
+          .allowsHitTesting(false)
       }
         .scaleEffect(isPressed ? 0.96 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isPressed)

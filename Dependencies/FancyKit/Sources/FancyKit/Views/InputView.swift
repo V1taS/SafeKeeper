@@ -80,11 +80,11 @@ public struct InputView: View {
         if case let .leftHelper(text) = style {
           Text("\(text)")
             .font(.fancy.h3)
-            .fontWeight(.semibold)
             .foregroundColor(.fancy.constant.slate)
             .lineLimit(Constants.lineLimit)
             .truncationMode(.tail)
-            .padding(.trailing, .s3)
+            .padding(.trailing, .s2)
+            .allowsHitTesting(false)
         }
         
         VStack(alignment: .leading, spacing: .zero) {
@@ -95,6 +95,7 @@ public struct InputView: View {
               .lineLimit(Constants.lineLimit)
               .truncationMode(.tail)
               .padding(.top, .s4)
+              .allowsHitTesting(false)
           }
           
           TextField("", text: $text,  axis: .vertical)
@@ -110,7 +111,6 @@ public struct InputView: View {
             .padding(.vertical, .s1)
             .lineLimit(Constants.lineLimit)
             .font(.fancy.b1)
-            .fontWeight(.semibold)
             .foregroundColor(.fancy.constant.ghost)
             .accentColor(isError ? .fancy.constant.ruby : .fancy.constant.azure)
             .truncationMode(.tail)
@@ -121,7 +121,6 @@ public struct InputView: View {
                 .padding(.vertical, .s1)
                 .foregroundColor(.fancy.constant.slate).opacity(0.3)
                 .font(.fancy.b1)
-                .fontWeight(.semibold)
                 .padding(.bottom, .s4)
                 .padding(.top, style.isTopHelper ? .zero : .s4)
             }
