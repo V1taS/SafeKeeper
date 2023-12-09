@@ -8,13 +8,11 @@
 import SwiftUI
 import FancyStyle
 
-// TODO: - Плохо работает скрол из-за обработок событий, надо разобраться с этим
 public struct WidgetCryptocurrencyView: View {
   
   // MARK: - Private properties
   
   @Binding private var models: [WidgetCryptocurrencyView.Model]
-  @State private var pressedStates: [UUID: Bool] = [:]
   private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
@@ -29,20 +27,17 @@ public struct WidgetCryptocurrencyView: View {
   // MARK: - Body
   
   public var body: some View {
-    ScrollView {
-      LazyVStack(alignment: .center, spacing: .zero) {
-        ForEach(Array(models.enumerated()), id: \.element.id) { index, model in
-          createWidgetCryptocurrency(model: model)
-            .opacity(pressedStates[model.id, default: false] ? 0.85 : 1)
-          
-          if models.count > 1 && models.count - 1 != index {
-            Color.fancy.constant.slate.opacity(0.3)
-              .frame(width: .infinity, height: 1)
-          }
+    LazyVStack(alignment: .center, spacing: .zero) {
+      ForEach(Array(models.enumerated()), id: \.element.id) { index, model in
+        createWidgetCryptocurrency(model: model)
+        
+        if models.count > 1 && models.count - 1 != index {
+          Color.fancy.constant.slate.opacity(0.3)
+            .frame(width: .infinity, height: 1)
         }
       }
-      .clipShape(RoundedRectangle(cornerRadius: .s5))
     }
+    .clipShape(RoundedRectangle(cornerRadius: .s5))
   }
 }
 
@@ -52,23 +47,15 @@ private extension WidgetCryptocurrencyView {
   func createWidgetCryptocurrency(model: WidgetCryptocurrencyView.Model) -> AnyView {
     AnyView(
       ZStack {
-        Color.fancy.constant.navy
-          .disabled(!model.isSelectable)
-          .onLongPressGesture(
-            minimumDuration: .infinity,
-            maximumDistance: .infinity,
-            pressing: { isPressing in
-              if model.isSelectable {
-                pressedStates[model.id] = isPressing
-                
-                if !isPressing {
-                  impactFeedback.impactOccurred()
-                  model.action()
-                }
-              }
-            },
-            perform: {}
-          )
+        TapGestureView(
+          content: Color.fancy.constant.navy,
+          style: .flash,
+          isEnabled: .constant(model.isSelectable),
+          action: {},
+          endAction: {
+            model.action()
+          }
+        )
         
         HStack(spacing: .s4) {
           Image(uiImage: UIImage(data: model.imageData) ?? UIImage())

@@ -72,33 +72,30 @@ public struct MainButtonView: View {
   
   public var body: some View {
     ZStack {
-      LinearGradient(
-        gradient: Gradient(
-          colors: isEnabled ? style.enabledColors : style.disabledColors
+      TapGestureView(
+        content: LinearGradient(
+          gradient: Gradient(
+            colors: isEnabled ? style.enabledColors : style.disabledColors
+          ),
+          startPoint: .leading,
+          endPoint: .trailing
         ),
-        startPoint: .leading,
-        endPoint: .trailing
+        style: .none,
+        isEnabled: .constant(isEnabled),
+        action: {
+          withAnimation(.easeInOut(duration: 0.2)) {
+            isPressed = true
+          }
+        },
+        endAction: {
+          withAnimation(.easeInOut(duration: 0.2)) {
+            isPressed = false
+            action()
+          }
+        }
       )
       .clipShape(RoundedRectangle(cornerRadius: .s4))
       .frame(height: .s13)
-      .disabled(!isEnabled)
-      .onLongPressGesture(
-        minimumDuration: .infinity,
-        maximumDistance: .infinity,
-        pressing: { isPressing in
-          if isEnabled {
-            withAnimation(.easeInOut(duration: 0.2)) {
-              isPressed = isPressing
-              
-              if !isPressing {
-                impactFeedback.impactOccurred()
-                action()
-              }
-            }
-          }
-        },
-        perform: {}
-      )
       
       Text(text)
         .font(.fancy.h3)

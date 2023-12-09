@@ -81,28 +81,24 @@ private extension CircleButtonView {
   func createCircleButtonView() -> AnyView {
     AnyView(
       ZStack {
-        Color.fancy.constant.navy
-          .frame(width: .s14, height: .s14)
-          .clipShape(Circle())
-          .disabled(!isEnabled)
-          .opacity(isEnabled ? 1 : 0.3)
-          .onLongPressGesture(
-            minimumDuration: .infinity,
-            maximumDistance: .infinity,
-            pressing: { isPressing in
-              if isEnabled {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                  isPressed = isPressing
-                  
-                  if !isPressing {
-                    impactFeedback.impactOccurred()
-                    action()
-                  }
-                }
-              }
-            },
-            perform: {}
-          )
+        TapGestureView(
+          content: Color.fancy.constant.navy,
+          style: .none,
+          isEnabled: .constant(isEnabled),
+          action: {
+            withAnimation(.easeInOut(duration: 0.2)) {
+              isPressed = true
+            }
+          },
+          endAction: {
+            withAnimation(.easeInOut(duration: 0.2)) {
+              isPressed = false
+              action()
+            }
+          }
+        )
+        .frame(width: .s14, height: .s14)
+        .clipShape(Circle())
         
         Image(systemName: style.imageSystemName)
           .imageScale(.large)

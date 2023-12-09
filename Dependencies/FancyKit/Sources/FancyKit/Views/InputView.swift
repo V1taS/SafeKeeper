@@ -8,7 +8,6 @@
 import SwiftUI
 import FancyStyle
 
-// TODO: - Добавить в правом нижнем углу счетчик символов
 public struct InputView: View {
   
   // MARK: - Style
