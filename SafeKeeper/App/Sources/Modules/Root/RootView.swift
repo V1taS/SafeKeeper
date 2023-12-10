@@ -27,9 +27,16 @@ struct RootView: View {
       
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
+          QRCodeView(
+            dataString: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+            icon: UIImage(systemName: "link.circle")?.pngData()
+          )
+          .padding(.bottom)
+          
           TitleAndSubtitleView(
             titleText: "$ 153,04",
             subtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+            style: .large,
             isEnabled: .constant(true),
             lineLimitTitle: 1,
             lineLimitSubtitle: 1,

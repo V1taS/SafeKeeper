@@ -112,7 +112,7 @@ struct TitleAndSubtitleView_Previews: PreviewProvider {
         TitleAndSubtitleView(
           titleText: "$ 153,04",
           subtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
-          style: .standart,
+          style: .large,
           isEnabled: .constant(true),
           lineLimitTitle: 1,
           lineLimitSubtitle: 1,
