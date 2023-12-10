@@ -10,8 +10,29 @@ import FancyStyle
 
 public struct TitleAndSubtitleView: View {
   
+  // MARK: - Style
+  
+  public enum Style {
+    
+    var fontTitle: Font {
+      switch self {
+      case .large:
+        return .fancy.h1
+      case .standart:
+        return .fancy.b1Medium
+      }
+    }
+    
+    /// Большой
+    case large
+    
+    /// Стандартный
+    case standart
+  }
+  
   // MARK: - Private properties
   
+  private let style: Style
   @Binding private var isEnabled: Bool
   private let titleText: String
   private let subtitleText: String
@@ -32,6 +53,7 @@ public struct TitleAndSubtitleView: View {
   ///   - action: Замыкание, которое будет выполняться при нажатии на SubtitleText
   public init(titleText: String,
               subtitleText: String,
+              style: TitleAndSubtitleView.Style = .standart,
               isEnabled: Binding<Bool> = .constant(true),
               lineLimitTitle: Int = 1,
               lineLimitSubtitle: Int = 1,
@@ -39,6 +61,7 @@ public struct TitleAndSubtitleView: View {
               action: @escaping () -> Void) {
     self.titleText = titleText
     self.subtitleText = subtitleText
+    self.style = style
     self._isEnabled = isEnabled
     self.lineLimitTitle = lineLimitTitle
     self.lineLimitSubtitle = lineLimitSubtitle
@@ -51,7 +74,7 @@ public struct TitleAndSubtitleView: View {
   public var body: some View {
     VStack(alignment: alignment, spacing: .zero) {
       Text(titleText)
-        .font(.fancy.h1)
+        .font(style.fontTitle)
         .foregroundColor(.fancy.constant.ghost)
         .lineLimit(lineLimitTitle)
         .truncationMode(.tail)
@@ -89,9 +112,11 @@ struct TitleAndSubtitleView_Previews: PreviewProvider {
         TitleAndSubtitleView(
           titleText: "$ 153,04",
           subtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+          style: .standart,
           isEnabled: .constant(true),
           lineLimitTitle: 1,
           lineLimitSubtitle: 1,
+          alignment: .center,
           action: {}
         )
         Spacer()
