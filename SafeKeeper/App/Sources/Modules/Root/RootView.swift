@@ -29,11 +29,11 @@ struct RootView: View {
         VStack(spacing: 16) {
           TitleAndSubtitleView(
             titleText: "$ 153,04",
-            SubtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+            subtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
             isEnabled: .constant(true),
-            action: {
-              
-            }
+            lineLimitTitle: 1,
+            lineLimitSubtitle: 1,
+            action: {}
           )
           .padding(.bottom)
           

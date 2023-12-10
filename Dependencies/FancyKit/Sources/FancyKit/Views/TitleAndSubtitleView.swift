@@ -14,8 +14,11 @@ public struct TitleAndSubtitleView: View {
   
   @Binding private var isEnabled: Bool
   private let titleText: String
-  private let SubtitleText: String
+  private let subtitleText: String
   private let action: () -> Void
+  private let lineLimitTitle: Int
+  private let lineLimitSubtitle: Int
+  private let alignment: HorizontalAlignment
   
   // MARK: - Initialization
   
@@ -24,54 +27,53 @@ public struct TitleAndSubtitleView: View {
   ///   - titleText: Основной текст
   ///   - SubtitleText: Дополнительный текст снизу
   ///   - isEnabled: Нажатие на SubtitleText включено
+  ///   - lineLimitTitle: Ограничение строк у заголовка
+  ///   - lineLimitSubtitle: Ограничение строк у подзаголовка
   ///   - action: Замыкание, которое будет выполняться при нажатии на SubtitleText
   public init(titleText: String,
-              SubtitleText: String,
+              subtitleText: String,
               isEnabled: Binding<Bool> = .constant(true),
+              lineLimitTitle: Int = 1,
+              lineLimitSubtitle: Int = 1,
+              alignment: HorizontalAlignment = .center,
               action: @escaping () -> Void) {
     self.titleText = titleText
-    self.SubtitleText = SubtitleText
+    self.subtitleText = subtitleText
     self._isEnabled = isEnabled
+    self.lineLimitTitle = lineLimitTitle
+    self.lineLimitSubtitle = lineLimitSubtitle
+    self.alignment = alignment
     self.action = action
   }
   
   // MARK: - Body
   
   public var body: some View {
-    VStack(spacing: .zero) {
+    VStack(alignment: alignment, spacing: .zero) {
       Text(titleText)
         .font(.fancy.h1)
         .foregroundColor(.fancy.constant.ghost)
-        .lineLimit(Constants.lineLimit)
+        .lineLimit(lineLimitTitle)
         .truncationMode(.tail)
         .allowsHitTesting(false)
+        .multilineTextAlignment(.center)
       
       TapGestureView(
-        content: Text(SubtitleText)
+        content: Text(subtitleText)
           .font(.fancy.b1)
           .foregroundColor(.fancy.constant.slate)
-          .lineLimit(Constants.lineLimit)
-          .truncationMode(.middle),
+          .lineLimit(lineLimitSubtitle)
+          .truncationMode(.middle)
+          .multilineTextAlignment(.center),
         style: .animationZoomOut,
         isEnabled: $isEnabled,
         touchesEnded: {
-          
+          action()
         }
       )
       .padding(.top, .s2)
     }
   }
-}
-
-// MARK: - Private
-
-private extension TitleAndSubtitleView {
-}
-
-// MARK: - Constants
-
-private enum Constants {
-  static let lineLimit = 1
 }
 
 // MARK: - Preview
@@ -86,8 +88,10 @@ struct TitleAndSubtitleView_Previews: PreviewProvider {
         Spacer()
         TitleAndSubtitleView(
           titleText: "$ 153,04",
-          SubtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+          subtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
           isEnabled: .constant(true),
+          lineLimitTitle: 1,
+          lineLimitSubtitle: 1,
           action: {}
         )
         Spacer()
