@@ -27,6 +27,16 @@ struct RootView: View {
       
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
+          TitleAndSubtitleView(
+            titleText: "$ 153,04",
+            SubtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+            isEnabled: .constant(true),
+            action: {
+              
+            }
+          )
+          .padding(.bottom)
+          
           Group {
             InputView(
               text: $inputViewOne,
