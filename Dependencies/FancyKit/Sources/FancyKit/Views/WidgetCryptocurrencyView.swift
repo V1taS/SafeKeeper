@@ -13,7 +13,6 @@ public struct WidgetCryptocurrencyView: View {
   // MARK: - Private properties
   
   @Binding private var models: [WidgetCryptocurrencyView.Model]
-  private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
   
@@ -51,8 +50,8 @@ private extension WidgetCryptocurrencyView {
           content: Color.fancy.constant.navy,
           style: .flash,
           isEnabled: .constant(model.isSelectable),
-          action: {},
-          endAction: {
+          touchesBegan: {},
+          touchesEnded: {
             model.action()
           }
         )

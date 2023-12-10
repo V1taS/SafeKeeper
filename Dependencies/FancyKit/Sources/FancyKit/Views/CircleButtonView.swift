@@ -32,12 +32,10 @@ public struct CircleButtonView: View {
   
   // MARK: - Private properties
   
-  @State private var isPressed = false
   @Binding private var isEnabled: Bool
   private let text: String
   private let style: Style
   private let action: () -> Void
-  private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
   
@@ -80,34 +78,25 @@ public struct CircleButtonView: View {
 private extension CircleButtonView {
   func createCircleButtonView() -> AnyView {
     AnyView(
-      ZStack {
-        TapGestureView(
-          content: Color.fancy.constant.navy,
-          style: .none,
-          isEnabled: .constant(isEnabled),
-          action: {
-            withAnimation(.easeInOut(duration: 0.2)) {
-              isPressed = true
-            }
-          },
-          endAction: {
-            withAnimation(.easeInOut(duration: 0.2)) {
-              isPressed = false
-              action()
-            }
-          }
-        )
-        .frame(width: .s14, height: .s14)
-        .clipShape(Circle())
-        
-        Image(systemName: style.imageSystemName)
-          .imageScale(.large)
-          .font(.fancy.h3)
-          .foregroundColor(.fancy.constant.ghost)
-          .allowsHitTesting(false)
-      }
-        .scaleEffect(isPressed ? 0.96 : 1.0)
-        .animation(.easeInOut(duration: 0.2), value: isPressed)
+      TapGestureView(
+        content:  ZStack {
+          Color.fancy.constant.navy
+          
+          Image(systemName: style.imageSystemName)
+            .imageScale(.large)
+            .font(.fancy.h3)
+            .foregroundColor(.fancy.constant.ghost)
+            .allowsHitTesting(false)
+        }
+          .frame(width: .s14, height: .s14)
+          .clipShape(Circle()),
+        style: .animationZoomOut,
+        isEnabled: .constant(isEnabled),
+        touchesBegan: {},
+        touchesEnded: {
+          action()
+        }
+      )
     )
   }
 }

@@ -45,10 +45,8 @@ public struct MainButtonView: View {
   
   private let text: String
   private let style: Style
-  @State private var isPressed = false
   @Binding private var isEnabled: Bool
   private let action: () -> Void
-  private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
   
@@ -71,43 +69,35 @@ public struct MainButtonView: View {
   // MARK: - Body
   
   public var body: some View {
-    ZStack {
-      TapGestureView(
-        content: LinearGradient(
+    
+    TapGestureView(
+      content: ZStack {
+        LinearGradient(
           gradient: Gradient(
             colors: isEnabled ? style.enabledColors : style.disabledColors
           ),
           startPoint: .leading,
           endPoint: .trailing
-        ),
-        style: .none,
-        isEnabled: .constant(isEnabled),
-        action: {
-          withAnimation(.easeInOut(duration: 0.2)) {
-            isPressed = true
-          }
-        },
-        endAction: {
-          withAnimation(.easeInOut(duration: 0.2)) {
-            isPressed = false
-            action()
-          }
-        }
-      )
-      .clipShape(RoundedRectangle(cornerRadius: .s4))
-      .frame(height: .s13)
-      
-      Text(text)
-        .font(.fancy.h3)
-        .foregroundColor(.fancy.constant.ghost)
-        .padding(.s4)
-        .frame(maxWidth: .infinity)
-        .lineLimit(Constants.lineLimit)
-        .truncationMode(.tail)
-        .allowsHitTesting(false)
-    }
-    .scaleEffect(isPressed ? 0.96 : 1.0)
-    .animation(.easeInOut(duration: 0.2), value: isPressed)
+        )
+        
+        Text(text)
+          .font(.fancy.h3)
+          .foregroundColor(.fancy.constant.ghost)
+          .padding(.s4)
+          .frame(maxWidth: .infinity)
+          .lineLimit(Constants.lineLimit)
+          .truncationMode(.tail)
+          .allowsHitTesting(false)
+      }
+        .clipShape(RoundedRectangle(cornerRadius: .s4))
+        .frame(height: .s13),
+      style: .animationZoomOut,
+      isEnabled: .constant(isEnabled),
+      touchesBegan: {},
+      touchesEnded: {
+        action()
+      }
+    )
   }
 }
 

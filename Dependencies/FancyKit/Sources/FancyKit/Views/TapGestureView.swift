@@ -18,9 +18,7 @@ public struct TapGestureView<Content: View>: View {
       switch self {
       case .flash:
         return 0.8
-      case .animationZoomOut:
-        return 1.0
-      case .none:
+      default:
         return 1.0
       }
     }
@@ -44,10 +42,9 @@ public struct TapGestureView<Content: View>: View {
   
   private let style: Style
   private let content: Content
-  @State private var isPressed = false
   @Binding private var isEnabled: Bool
-  private let action: () -> Void
-  private let endAction: () -> Void
+  private let touchesBegan: (() -> Void)?
+  private let touchesEnded: () -> Void
   private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
@@ -57,39 +54,35 @@ public struct TapGestureView<Content: View>: View {
   ///   - content: Контент
   ///   - style: Стиль вью
   ///   - isEnabled: Вью включена
-  ///   - action: Замыкание, которое будет выполняться при нажатии на вью
-  ///   - endAction: Замыкание, которое будет выполняться в конце выполнения кнопки
+  ///   - touchesBegan: Замыкание, которое будет выполняться при нажатии на вью
+  ///   - touchesEnded: Замыкание, которое будет выполняться в конце выполнения кнопки
   public init(content: Content,
               style: TapGestureView.Style = .flash,
               isEnabled: Binding<Bool> = .constant(true),
-              action: @escaping () -> Void,
-              endAction: @escaping () -> Void) {
+              touchesBegan: (() -> Void)? = nil,
+              touchesEnded: @escaping () -> Void) {
     self.content = content
     self.style = style
     self._isEnabled = isEnabled
-    self.action = action
-    self.endAction = endAction
+    self.touchesBegan = touchesBegan
+    self.touchesEnded = touchesEnded
   }
   
   // MARK: - Body
   
   public var body: some View {
     Button(action: {
-      if style == .animationZoomOut {
-        isPressed = true
-      }
       impactFeedback.impactOccurred()
-      action()
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-        isPressed = false
-        endAction()
-      }
+      touchesEnded()
     }) {
       content
     }
-    .buttonStyle(TapGestureFlashStyle(style: style))
-    .scaleEffect(isPressed ? 0.96 : 1.0)
-    .animation(.easeInOut(duration: 0.2), value: isPressed)
+    .buttonStyle(TapGestureFlashStyle(
+      style: style,
+      touchesBegan: {
+        touchesBegan?()
+      }
+    ))
     .disabled(!isEnabled)
   }
 }
@@ -102,18 +95,43 @@ private extension TapGestureView {
     // MARK: - Private properties
     
     private let style: Style
+    private let touchesBegan: () -> Void
     
     // MARK: - Initialization
     
     /// Инициализатор для создания стиля
     /// - Parameters:
     ///   - style: Стиль вью
-    public init(style: TapGestureView.Style) {
+    ///   - touchesBegan: Замыкание, которое будет выполняться при нажатии на вью
+    public init(style: TapGestureView.Style,
+                touchesBegan: @escaping () -> Void
+    ) {
       self.style = style
+      self.touchesBegan = touchesBegan
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
-      configuration.label
+      if configuration.isPressed {
+        touchesBegan()
+      }
+      
+      let scaleEffect: CGFloat = switch style {
+      case .animationZoomOut:
+        configuration.isPressed ? 0.96 : 1.0
+      default:
+        1.0
+      }
+      
+      let animation: Bool = switch style {
+      case .animationZoomOut:
+        configuration.isPressed
+      default:
+        false
+      }
+      
+      return configuration.label
+        .scaleEffect(scaleEffect)
+        .animation(.easeInOut(duration: 0.2), value: animation)
         .opacity(configuration.isPressed ? style.opacityPressedDown : style.opacityPressedUp)
     }
   }
@@ -133,10 +151,10 @@ struct TapGestureView_Previews: PreviewProvider {
           Color.fancy.constant.navy
           Text("Кнопка")
         },
-        style: .flash,
+        style: .animationZoomOut,
         isEnabled: .constant(true),
-        action: {},
-        endAction: {}
+        touchesBegan: {},
+        touchesEnded: {}
       )
       .frame(width: 200, height: 200)
       Spacer()
