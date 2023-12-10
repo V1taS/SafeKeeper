@@ -11,6 +11,11 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'Update versions')"
     
     steps:
+      - name: Set Xcode version
+        uses: maxim-lobanov/setup-xcode@v1.6.0
+        with:
+          xcode-version: '14.2.0'
+
       - name: Checkout repository
         uses: actions/checkout@v3
 

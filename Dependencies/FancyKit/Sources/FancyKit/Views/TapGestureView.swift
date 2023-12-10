@@ -114,19 +114,12 @@ private extension TapGestureView {
       if configuration.isPressed {
         touchesBegan()
       }
+      var scaleEffect: CGFloat = 1.0
+      var animation: Bool = false
       
-      let scaleEffect: CGFloat = switch style {
-      case .animationZoomOut:
-        configuration.isPressed ? 0.96 : 1.0
-      default:
-        1.0
-      }
-      
-      let animation: Bool = switch style {
-      case .animationZoomOut:
-        configuration.isPressed
-      default:
-        false
+      if style == .animationZoomOut {
+        scaleEffect = configuration.isPressed ? 0.96 : 1.0
+        animation = configuration.isPressed
       }
       
       return configuration.label
