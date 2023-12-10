@@ -27,6 +27,21 @@ struct RootView: View {
       
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
+          HStack {
+            RoundButtonView(
+              style: .copy(text: "Copy"),
+              isEnabled: .constant(true),
+              action: {}
+            )
+            
+            RoundButtonView(
+              style: .custom(image: nil, text: "Max"),
+              isEnabled: .constant(true),
+              action: {}
+            )
+          }
+          .padding(.bottom)
+          
           QRCodeView(
             dataString: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
             icon: UIImage(systemName: "link.circle")?.pngData()

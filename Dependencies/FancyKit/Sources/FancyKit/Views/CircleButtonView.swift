@@ -20,6 +20,8 @@ public struct CircleButtonView: View {
         return "arrow.up"
       case .receive:
         return "arrow.down"
+      case .share:
+        return "square.and.arrow.up"
       }
     }
     
@@ -28,12 +30,15 @@ public struct CircleButtonView: View {
     
     /// Получить
     case receive
+    
+    /// Поделиться
+    case share
   }
   
   // MARK: - Private properties
   
   @Binding private var isEnabled: Bool
-  private let text: String
+  private let text: String?
   private let style: Style
   private let action: () -> Void
   
@@ -45,7 +50,7 @@ public struct CircleButtonView: View {
   ///   - style: Стиль кнопки
   ///   - isEnabled: Кнопка включена
   ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
-  public init(text: String,
+  public init(text: String?,
               style: CircleButtonView.Style,
               isEnabled: Binding<Bool> = .constant(true),
               action: @escaping () -> Void) {
@@ -61,14 +66,16 @@ public struct CircleButtonView: View {
     VStack {
       createCircleButtonView()
       
-      Text(text)
-        .font(.fancy.b1)
-        .foregroundColor(.fancy.constant.slate)
-        .frame(maxWidth: .s17)
-        .lineLimit(Constants.lineLimit)
-        .truncationMode(.tail)
-        .padding(.top, .s1)
-        .allowsHitTesting(false)
+      if let text {
+        Text(text)
+          .font(.fancy.b1)
+          .foregroundColor(.fancy.constant.slate)
+          .frame(maxWidth: .s17)
+          .lineLimit(Constants.lineLimit)
+          .truncationMode(.tail)
+          .padding(.top, .s1)
+          .allowsHitTesting(false)
+      }
     }
   }
 }
@@ -89,7 +96,8 @@ private extension CircleButtonView {
             .allowsHitTesting(false)
         }
           .frame(width: .s14, height: .s14)
-          .clipShape(Circle()),
+          .clipShape(Circle())
+        ,
         style: .animationZoomOut,
         isEnabled: .constant(isEnabled),
         touchesBegan: {},
@@ -147,6 +155,25 @@ struct CircleButtonView_Previews: PreviewProvider {
           CircleButtonView(
             text: "Receive",
             style: .receive,
+            isEnabled: .constant(false),
+            action: {}
+          )
+          Spacer()
+        }
+        .padding(.top)
+        
+        HStack {
+          Spacer()
+          CircleButtonView(
+            text: nil,
+            style: .share,
+            isEnabled: .constant(true),
+            action: {}
+          )
+          
+          CircleButtonView(
+            text: "Share",
+            style: .share,
             isEnabled: .constant(false),
             action: {}
           )
