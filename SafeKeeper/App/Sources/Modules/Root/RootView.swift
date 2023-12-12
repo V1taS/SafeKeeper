@@ -49,13 +49,44 @@ struct RootView: View {
           .padding(.bottom)
           
           TitleAndSubtitleView(
-            titleText: "$ 153,04",
-            subtitleText: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
-            style: .large,
-            isEnabled: .constant(true),
-            lineLimitTitle: 1,
-            lineLimitSubtitle: 1,
-            action: {}
+            model: .init(
+              .title(
+                text: "$ 153,04",
+                lineLimit: 1,
+                isSelectable: true,
+                isSecure: false,
+                action: {}
+              ),
+              .description(
+                text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+                lineLimit: 1,
+                isSelectable: true,
+                isSecure: false,
+                action: {}),
+              alignment: .center,
+              style: .large
+            )
+          )
+          .padding(.bottom)
+          
+          TitleAndSubtitleView(
+            model: .init(
+              .title(
+                text: "",
+                lineLimit: 1,
+                isSelectable: true,
+                isSecure: true,
+                action: {}
+              ),
+              .description(
+                text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+                lineLimit: 1,
+                isSelectable: true,
+                isSecure: false,
+                action: {}),
+              alignment: .center,
+              style: .large
+            )
           )
           .padding(.bottom)
           
