@@ -1,5 +1,5 @@
 //
-//  RoundedColorEdge.swift
+//  RoundedColorEdgeView.swift
 //
 //
 //  Created by Vitalii Sosin on 10.12.2023.
@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-public struct RoundedColorEdge: ViewModifier {
+// MARK: - RoundedColorEdgeView
+
+public struct RoundedColorEdgeView: ViewModifier {
   let backgroundColor: Color
   let boarderColor: Color
   
@@ -26,7 +28,12 @@ public struct RoundedColorEdge: ViewModifier {
 
 extension View {
   func roundedEdge(backgroundColor: Color, boarderColor: Color = .clear) -> some View {
-    self.modifier(RoundedColorEdge(backgroundColor: backgroundColor, boarderColor: boarderColor))
+    self.modifier(
+      RoundedColorEdgeView(
+        backgroundColor: backgroundColor,
+        boarderColor: boarderColor
+      )
+    )
   }
 }
 

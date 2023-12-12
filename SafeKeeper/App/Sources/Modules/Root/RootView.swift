@@ -113,41 +113,175 @@ struct RootView: View {
           .padding(.top)
           
           Group {
-            WidgetCryptocurrencyView(models: .constant([
+            WidgetCryptoView(models: .constant([
               .init(
-                name: "Toncoin",
-                imageData: Constants.mockImageData,
-                totalCrypto: "62,93",
-                totalCurrency: "152 $",
-                currentPriceCryptoInCurrency: "2,41 $",
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Toncoin",
+                  description: "$2,31",
+                  addition: "+0,29%",
+                  additionStyle: .positive
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "1 436,99",
+                  titleStyle: .standart,
+                  titleIsSecure: false,
+                  description: "$3 325,48",
+                  descriptionSecure: false
+                ),
+                additionText: nil,
+                additionContent: nil,
                 isSelectable: true,
                 action: {}
               ),
               .init(
-                name: "Bitcoin",
-                imageData: Constants.mockImageData,
-                totalCrypto: "30,93",
-                totalCurrency: "52 $",
-                currentPriceCryptoInCurrency: "1,41 $",
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Toncoin",
+                  description: "$2,31",
+                  addition: "-3,29%",
+                  additionStyle: .negative
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "1 436,99",
+                  titleStyle: .standart,
+                  titleIsSecure: false,
+                  description: "$3 325,48",
+                  descriptionSecure: false
+                ),
+                additionText: nil,
+                additionContent: nil,
                 isSelectable: true,
                 action: {}
               ),
               .init(
-                name: "Bitcoin",
-                imageData: Constants.mockImageData,
-                totalCrypto: "30,93",
-                totalCurrency: "52 $",
-                currentPriceCryptoInCurrency: "1,41 $",
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Toncoin",
+                  description: "$2,31",
+                  addition: nil,
+                  additionStyle: .standart
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "1 436,99",
+                  titleStyle: .standart,
+                  titleIsSecure: false,
+                  description: "$3 325,48",
+                  descriptionSecure: false
+                ),
+                additionText: "Welcome to the TON DNS Club tondnsclub Welcome to the TON DNS Club",
+                additionContent: nil,
                 isSelectable: true,
                 action: {}
               ),
               .init(
-                name: "Bitcoin",
-                imageData: Constants.mockImageData,
-                totalCrypto: "30,93",
-                totalCurrency: "52 $",
-                currentPriceCryptoInCurrency: "1,41 $",
-                isSelectable: false,
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Toncoin",
+                  description: "$2,31",
+                  addition: nil,
+                  additionStyle: .standart
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "1 436,99",
+                  titleStyle: .standart,
+                  titleIsSecure: false,
+                  description: "$3 325,48",
+                  descriptionSecure: false
+                ),
+                additionText: "Welcome to the TON DNS Club tondnsclub",
+                additionContent: AnyView(
+                  MainButtonView(text: "Some View HERE", action: {})
+                ),
+                isSelectable: true,
+                action: {}
+              ),
+              .init(
+                .leftSide(
+                  icon: nil,
+                  title: "Earn TON",
+                  description: "APY up to 4.64%",
+                  addition: nil,
+                  additionStyle: .standart
+                ),
+                .rightSide(
+                  isChevron: true,
+                  title: "",
+                  titleStyle: .standart,
+                  titleIsSecure: false,
+                  description: "",
+                  descriptionSecure: false
+                ),
+                additionText: nil,
+                additionContent: nil,
+                isSelectable: true,
+                action: {}
+              ),
+              .init(
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Received",
+                  description: "$UQCK...Bauu",
+                  addition: nil,
+                  additionStyle: .standart
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "NFT",
+                  titleStyle: .positive,
+                  titleIsSecure: false,
+                  description: "14 Jul, 07:25",
+                  descriptionSecure: false
+                ),
+                additionText: nil,
+                additionContent: nil,
+                isSelectable: true,
+                action: {}
+              ),
+              .init(
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Bid",
+                  description: "+888 1008 4169",
+                  addition: nil,
+                  additionStyle: .standart
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "- 188 TON",
+                  titleStyle: .negative,
+                  titleIsSecure: false,
+                  description: "14 Jul, 07:10",
+                  descriptionSecure: false
+                ),
+                additionText: nil,
+                additionContent: nil,
+                isSelectable: true,
+                action: {}
+              ),
+              .init(
+                .leftSide(
+                  icon: Constants.mockImageData,
+                  title: "Received",
+                  description: "UQCZ...aO1R",
+                  addition: nil,
+                  additionStyle: .standart
+                ),
+                .rightSide(
+                  isChevron: false,
+                  title: "",
+                  titleStyle: .positive,
+                  titleIsSecure: true,
+                  description: "",
+                  descriptionSecure: true
+                ),
+                additionText: "Welcome to the TON DNS Club tondnsclub",
+                additionContent: nil,
+                isSelectable: true,
                 action: {}
               )
             ]))
