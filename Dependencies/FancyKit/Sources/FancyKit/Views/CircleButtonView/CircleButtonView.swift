@@ -52,16 +52,16 @@ private extension CircleButtonView {
         .init(
           content: AnyView(
             ZStack {
-              Color.fancy.constant.navy
+              model.style.buttonColor
               
-              Image(systemName: model.style.imageSystemName)
+              Image(systemName: model.type.imageSystemName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(.fancy.constant.ghost)
-                .frame(height: model.type.size / 2)
+                .frame(height: model.size.buttonSize / 2.6)
                 .allowsHitTesting(false)
             }
-              .frame(width: model.type.size, height: model.type.size)
+              .frame(width: model.size.buttonSize, height: model.size.buttonSize)
               .clipShape(Circle())
           ),
           style: .animationZoomOut,
@@ -96,8 +96,8 @@ struct CircleButtonView_Previews: PreviewProvider {
           CircleButtonView(
             .init(
               text: "Send",
-              style: .receive,
-              type: .large,
+              type: .custom(systemNameImage: "arrow.up.arrow.down"),
+              size: .large,
               action: {}
             )
           )
@@ -105,8 +105,8 @@ struct CircleButtonView_Previews: PreviewProvider {
           CircleButtonView(
             .init(
               text: "Receive",
-              style: .receive,
-              type: .small,
+              type: .receive,
+              size: .small,
               action: {}
             )
           )
