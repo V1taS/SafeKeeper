@@ -5,7 +5,7 @@
 //  Created by Vitalii Sosin on 13.12.2023.
 //
 
-import Foundation
+import SwiftUI
 
 // MARK: - Model
 
@@ -15,13 +15,19 @@ extension InputCryptoWidgetView {
     public let id = UUID()
     
     /// Валюта
-    public let currency: InputCryptoWidgetView.CurrencyType
+    @Binding public var currency: InputCryptoWidgetView.Currency
     
     /// Криптовалюта
-    public let crypto: InputCryptoWidgetView.CryptoType
+    @Binding public var crypto: InputCryptoWidgetView.Crypto
     
     /// Тип показа данных
-    public let showType: InputCryptoWidgetView.ShowType
+    @Binding public var showType: InputCryptoWidgetView.ShowType
+    
+    /// Максимальная длина символов
+    public let maxLength: Int
+    
+    /// Перевернуть значения
+    public let flipAction: () -> Void
     
     // MARK: - Initialization
     
@@ -30,12 +36,18 @@ extension InputCryptoWidgetView {
     ///   - currency: Валюта
     ///   - crypto: Криптовалюта
     ///   - showType: Тип показа данных
-    public init(_ currency: InputCryptoWidgetView.CurrencyType,
-                _ crypto: InputCryptoWidgetView.CryptoType,
-                showType: InputCryptoWidgetView.ShowType) {
-      self.currency = currency
-      self.crypto = crypto
-      self.showType = showType
+    ///   - maxLength: Максимальная длина символов
+    ///   - flipAction: Перевернуть значения
+    public init(_ currency: Binding<InputCryptoWidgetView.Currency>,
+                _ crypto: Binding<InputCryptoWidgetView.Crypto>,
+                showType: Binding<InputCryptoWidgetView.ShowType>,
+                maxLength: Int = 100,
+                flipAction: @escaping () -> Void) {
+      self._currency = currency
+      self._crypto = crypto
+      self._showType = showType
+      self.maxLength = maxLength
+      self.flipAction = flipAction
     }
   }
 }
@@ -43,50 +55,44 @@ extension InputCryptoWidgetView {
 // MARK: - CurrencyType
 
 extension InputCryptoWidgetView {
-  public enum CurrencyType {
-    /// Имя валюты
-    public var name: String {
-      switch self {
-      case let .currency(name, _):
-        return name
-      }
-    }
-    
+  public struct Currency {
     /// Значение валюты
-    public var value: String {
-      switch self {
-      case let .currency(_, value):
-        return value
-      }
-    }
+    @Binding public var value: String
+    /// Имя валюты
+    public let name: String
     
-    /// Валюта
-    case currency(name: String, value: String)
+    // MARK: - Initialization
+    
+    /// Инициализатор
+    /// - Parameters:
+    ///   - value: Значение валюты
+    ///   - name: Имя валюты
+    public init(value: Binding<String>, name: String) {
+      self._value = value
+      self.name = name
+    }
   }
 }
 
 // MARK: - CryptoType
 
 extension InputCryptoWidgetView {
-  public enum CryptoType {
-    /// Имя криптовалюты
-    public var name: String {
-      switch self {
-      case let .crypto(name, _):
-        return name
-      }
-    }
-    
+  public struct Crypto {
     /// Значение криптовалюты
-    public var value: String {
-      switch self {
-      case let .crypto(_, value):
-        return value
-      }
-    }
+    @Binding public var value: String
+    /// Имя криптовалюты
+    public let name: String
     
-    /// Криптовалюта
-    case crypto(name: String, value: String)
+    // MARK: - Initialization
+    
+    /// Инициализатор
+    /// - Parameters:
+    ///   - value: Значение криптовалюты
+    ///   - name: Имя криптовалюты
+    public init(value: Binding<String>, name: String) {
+      self._value = value
+      self.name = name
+    }
   }
 }
 

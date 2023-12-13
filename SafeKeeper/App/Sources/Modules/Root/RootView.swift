@@ -27,6 +27,18 @@ struct RootView: View {
       
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
+          InputCryptoWidgetView(
+            .constant(
+              .init(
+                .constant(.init(value: .constant("270.15"), name: "USD")),
+                .constant(.init(value: .constant("112"), name: "TON")),
+                showType: .constant(.standart),
+                flipAction: {}
+              )
+            )
+          )
+          .frame(height: 300)
+          
           HStack {
             RoundButtonView(
               .init(
@@ -138,8 +150,8 @@ struct RootView: View {
               CircleButtonView(
                 .init(
                   text: "Send",
-                  style: .receive,
-                  type: .large,
+                  type: .receive,
+                  size: .large,
                   action: {}
                 )
               )
@@ -147,8 +159,8 @@ struct RootView: View {
               CircleButtonView(
                 .init(
                   text: "Receive",
-                  style: .receive,
-                  type: .small,
+                  type: .receive,
+                  size: .small,
                   action: {}
                 )
               )

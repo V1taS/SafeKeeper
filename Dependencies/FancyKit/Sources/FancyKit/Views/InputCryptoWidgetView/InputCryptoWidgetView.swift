@@ -19,7 +19,7 @@ public struct InputCryptoWidgetView: View {
   /// Инициализатор для создания виджета с криптовалютой
   /// - Parameters:
   ///   - model: Модель данных
-  public init(model: Binding<InputCryptoWidgetView.Model>) {
+  public init(_ model: Binding<InputCryptoWidgetView.Model>) {
     self._model = model
   }
   
@@ -36,16 +36,62 @@ public struct InputCryptoWidgetView: View {
 private extension InputCryptoWidgetView {
   func createExchangeWidgetCrypto(model: InputCryptoWidgetView.Model) -> AnyView {
     AnyView(
-      VStack(alignment: .center, spacing: .zero) {
+      ZStack {
+        Color.fancy.constant.navy
         
-        Text(model.crypto.value)
-          .font(.fancy.h3)
-          .foregroundColor(.fancy.constant.ghost)
-          .lineLimit(Constants.lineLimit)
-          .truncationMode(.tail)
-          .allowsHitTesting(false)
+        VStack(alignment: .center, spacing: .zero) {
+          HStack {
+            Spacer()
+            CircleButtonView(
+              .init(
+                type: .custom(systemNameImage: "arrow.up.arrow.down"),
+                size: .small,
+                style: .custom(color: .fancy.constant.ghost.opacity(0.1)),
+                action: {
+                  model.flipAction()
+                }
+              )
+            )
+            .foregroundColor(Color.fancy.constant.ghost)
+          }
+          .padding(.top, .s4)
+          .padding(.trailing, .s4)
+          
+          Spacer()
+          
+          HStack(alignment: .bottom, spacing: .s2) {
+            Text(model.crypto.value)
+              .font(.fancy.largeTitle)
+              .fontWeight(.bold)
+              .foregroundColor(.fancy.constant.ghost)
+              .lineLimit(Constants.lineLimit)
+              .truncationMode(.tail)
+              .allowsHitTesting(false)
+            
+            Text(model.crypto.name)
+              .font(.fancy.h1)
+              .fontWeight(.semibold)
+              .foregroundColor(.fancy.constant.slate)
+              .lineLimit(Constants.lineLimit)
+              .truncationMode(.tail)
+              .allowsHitTesting(false)
+          }
+          
+          Text("\(model.currency.value) \(model.currency.name)")
+            .font(.fancy.h3)
+            .foregroundColor(.fancy.constant.slate)
+            .lineLimit(Constants.lineLimit)
+            .truncationMode(.tail)
+            .allowsHitTesting(false)
+            .roundedEdge(
+              backgroundColor: .clear,
+              boarderColor: .fancy.constant.slate
+            )
+            .padding(.top, .s3)
+          
+          Spacer()
+        }
       }
-        .background(Color.fancy.constant.navy)
     )
   }
 }
@@ -61,24 +107,23 @@ private enum Constants {
 struct InputCryptoWidgetView_Previews: PreviewProvider {
   static var previews: some View {
     VStack {
-      InputCryptoWidgetView(model:
-          .constant(
-            InputCryptoWidgetView.Model(
-              .currency(
-                name: "USD",
-                value: "270.15"
-              ),
-              .crypto(
-                name: "TON",
-                value: "112"
-              ),
-              showType: .standart
-            )
+      Spacer()
+      HStack{ Spacer() }
+      InputCryptoWidgetView(
+        .constant(
+          .init(
+            .constant(.init(value: .constant("270.15"), name: "USD")),
+            .constant(.init(value: .constant("112"), name: "TON")),
+            showType: .constant(.standart),
+            maxLength: 100,
+            flipAction: {}
           )
+        )
       )
+      Spacer()
     }
-    .padding(.top, .s26)
-    .padding(.horizontal)
+    .padding(.vertical, .s26)
+    .padding(.horizontal, .s4)
     .background(Color.fancy.constant.onyx)
     .ignoresSafeArea(.all)
   }
