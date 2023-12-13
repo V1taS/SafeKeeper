@@ -29,22 +29,26 @@ struct RootView: View {
         VStack(spacing: 16) {
           HStack {
             RoundButtonView(
-              style: .copy(text: "Copy"),
-              isEnabled: .constant(true),
-              action: {}
+              .init(
+                style: .copy(text: "Copy"),
+                action: {}
+              )
             )
             
             RoundButtonView(
-              style: .custom(image: nil, text: "Max"),
-              isEnabled: .constant(true),
-              action: {}
+              .init(
+                style: .custom(image: nil, text: "Max"),
+                action: {}
+              )
             )
           }
           .padding(.bottom)
           
           QRCodeView(
-            dataString: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
-            icon: UIImage(systemName: "link.circle")?.pngData()
+            .init(
+              iconData: UIImage(systemName: "link.circle")?.pngData(),
+              dataString: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf"
+            )
           )
           .padding(.bottom)
           
@@ -92,33 +96,39 @@ struct RootView: View {
           
           Group {
             InputView(
-              text: $inputViewOne,
-              placeholder: "Input view one",
-              style: .none,
-              keyboardType: .default,
-              isEnabled: .constant(true),
-              maxLength: 7,
-              isError: .constant(false)
+              .init(
+                text: $inputViewOne,
+                placeholder: "Input view one",
+                style: .none,
+                keyboardType: .default,
+                isEnabled: .constant(true),
+                maxLength: 7,
+                isError: .constant(false)
+              )
             )
             
             InputView(
-              text: $inputViewTwo,
-              placeholder: "Input view two",
-              style: .leftHelper(text: "22:"),
-              keyboardType: .numberPad,
-              isEnabled: .constant(true),
-              maxLength: 20,
-              isError: .constant(false)
+              .init(
+                text: $inputViewTwo,
+                placeholder: "Input view two",
+                style: .leftHelper(text: "22:"),
+                keyboardType: .numberPad,
+                isEnabled: .constant(true),
+                maxLength: 20,
+                isError: .constant(false)
+              )
             )
             
             InputView(
-              text: $inputViewThree,
-              placeholder: "Input view three",
-              style: .topHelper(text: "Comments"),
-              keyboardType: .default,
-              isEnabled: .constant(true),
-              maxLength: 10,
-              isError: $isErrorThree
+              .init(
+                text: $inputViewThree,
+                placeholder: "Input view three",
+                style: .topHelper(text: "Comments"),
+                keyboardType: .default,
+                isEnabled: .constant(true),
+                maxLength: 10,
+                isError: $isErrorThree
+              )
             )
           }
           
@@ -126,17 +136,21 @@ struct RootView: View {
             HStack {
               Spacer()
               CircleButtonView(
-                text: "Send",
-                style: .send,
-                isEnabled: .constant(true),
-                action: {}
+                .init(
+                  text: "Send",
+                  style: .receive,
+                  type: .large,
+                  action: {}
+                )
               )
               
               CircleButtonView(
-                text: "Receive",
-                style: .receive,
-                isEnabled: .constant(true),
-                action: {}
+                .init(
+                  text: "Receive",
+                  style: .receive,
+                  type: .small,
+                  action: {}
+                )
               )
               Spacer()
             }
@@ -226,7 +240,12 @@ struct RootView: View {
                 ),
                 additionText: "Welcome to the TON DNS Club tondnsclub",
                 additionContent: AnyView(
-                  MainButtonView(text: "Some View HERE", action: {})
+                  MainButtonView(
+                    .init(
+                      text: "Any view here",
+                      action: {}
+                    )
+                  )
                 ),
                 isSelectable: true,
                 action: {}
@@ -322,17 +341,21 @@ struct RootView: View {
           Group {
             VStack {
               MainButtonView(
-                text: "Кнопка primary",
-                style: .primary,
-                isEnabled: .constant(true),
-                action: {}
+                .init(
+                  text: "Кнопка primary",
+                  style: .primary,
+                  isEnabled: .constant(true),
+                  action: {}
+                )
               )
               
               MainButtonView(
-                text: "Кнопка secondary",
-                style: .secondary,
-                isEnabled: .constant(true),
-                action: {}
+                .init(
+                  text: "Кнопка secondary",
+                  style: .secondary,
+                  isEnabled: .constant(true),
+                  action: {}
+                )
               )
             }
           }

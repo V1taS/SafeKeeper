@@ -30,33 +30,41 @@ public struct TitleAndSubtitleView: View {
       // Заголовок
       if case let .title(text, lineLimit, isSelectable, isSecure, action) = model.title {
         TapGestureView(
-          content: getTitleView(
-            with: isSecure,
-            text: text,
-            lineLimit: lineLimit
-          ),
-          style: .animationZoomOut,
-          isEnabled: .constant(isSelectable),
-          touchesEnded: {
-            action?()
-          }
+          .init(
+            content: AnyView(
+              getTitleView(
+                with: isSecure,
+                text: text,
+                lineLimit: lineLimit
+              )
+            ),
+            style: .animationZoomOut,
+            isEnabled: .constant(isSelectable),
+            touchesEnded: {
+              action?()
+            }
+          )
         )
       }
       
       // Описание
       if case let .description(text, lineLimit, isSelectable, isSecure, action) = model.description {
         TapGestureView(
-          content: Text(isSecure ? Constants.secureText : text)
-            .font(.fancy.b1)
-            .foregroundColor(.fancy.constant.slate)
-            .lineLimit(lineLimit)
-            .truncationMode(.middle)
-            .multilineTextAlignment(.center),
-          style: .animationZoomOut,
-          isEnabled: .constant(isSelectable),
-          touchesEnded: {
-            action?()
-          }
+          .init(
+            content: AnyView(
+              Text(isSecure ? Constants.secureText : text)
+                .font(.fancy.b1)
+                .foregroundColor(.fancy.constant.slate)
+                .lineLimit(lineLimit)
+                .truncationMode(.middle)
+                .multilineTextAlignment(.center)
+            ),
+            style: .animationZoomOut,
+            isEnabled: .constant(isSelectable),
+            touchesEnded: {
+              action?()
+            }
+          )
         )
         .padding(.top, .s2)
       }
@@ -64,7 +72,7 @@ public struct TitleAndSubtitleView: View {
   }
 }
 
-// MARK: - Model
+// MARK: - Private
 
 private extension TitleAndSubtitleView {
   func getTitleView(with isSecure: Bool, text: String, lineLimit: Int) -> AnyView {
@@ -72,6 +80,7 @@ private extension TitleAndSubtitleView {
       return AnyView(
         Image(systemName: "lock.circle")
           .resizable()
+          .aspectRatio(contentMode: .fit)
           .frame(width: .s11, height: .s11)
           .foregroundColor(.fancy.constant.ghost)
       )
@@ -84,80 +93,6 @@ private extension TitleAndSubtitleView {
           .truncationMode(.tail)
           .multilineTextAlignment(.center)
       )
-    }
-  }
-}
-
-// MARK: - Model
-
-extension TitleAndSubtitleView {
-  public enum Style {
-    /// Шрифт заголовка
-    var fontTitle: Font {
-      switch self {
-      case .large:
-        return .fancy.h1
-      case .standart:
-        return .fancy.b1Medium
-      }
-    }
-    /// Большой
-    case large
-    /// Стандартный
-    case standart
-  }
-  public enum Title {
-    case title(
-      text: String,
-      lineLimit: Int,
-      isSelectable: Bool,
-      isSecure: Bool,
-      action: (() -> Void)?
-    )
-  }
-  public enum Description {
-    case description(
-      text: String,
-      lineLimit: Int,
-      isSelectable: Bool,
-      isSecure: Bool,
-      action: (() -> Void)?
-    )
-  }
-  
-  public struct Model: Identifiable {
-    /// ID для модельки
-    public let id = UUID()
-    
-    /// Заголовок
-    public let title: TitleAndSubtitleView.Title
-    
-    /// Описание
-    public let description: TitleAndSubtitleView.Description
-    
-    /// Выравнивание всего контента
-    public var alignment: HorizontalAlignment = .center
-    /// Стиль
-    public var style: TitleAndSubtitleView.Style = .large
-    
-    // MARK: - Initialization
-    
-    /// Инициализатор для создания модельки
-    /// - Parameters:
-    ///   - title: Заголовок
-    ///   - description: Описание
-    ///   - alignment: Выравнивание всего контента
-    ///   - style: Стиль
-    public init(
-      _ title: TitleAndSubtitleView.Title,
-      _ description: TitleAndSubtitleView.Description,
-      alignment: HorizontalAlignment = .center,
-      style: TitleAndSubtitleView.Style = .large
-    ) {
-      self.title = title
-      self.description = description
-      self.alignment = alignment
-      self.style = style
     }
   }
 }

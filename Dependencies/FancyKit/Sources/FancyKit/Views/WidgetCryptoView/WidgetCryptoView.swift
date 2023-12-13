@@ -47,13 +47,16 @@ private extension WidgetCryptoView {
     AnyView(
       ZStack {
         TapGestureView(
-          content: Color.fancy.constant.navy,
-          style: .flash,
-          isEnabled: .constant(model.isSelectable),
-          touchesBegan: {},
-          touchesEnded: {
-            model.action()
-          }
+          .init(
+            content: AnyView(
+              Color.fancy.constant.navy
+            ),
+            style: .flash,
+            isEnabled: .constant(model.isSelectable),
+            touchesEnded: {
+              model.action()
+            }
+          )
         )
         
         VStack(spacing: .zero) {
@@ -64,6 +67,7 @@ private extension WidgetCryptoView {
               if let icon {
                 Image(uiImage: UIImage(data: icon) ?? UIImage())
                   .resizable()
+                  .aspectRatio(contentMode: .fit)
                   .frame(width: .s11, height: .s11)
                   .clipShape(Circle())
                   .allowsHitTesting(false)
@@ -107,6 +111,7 @@ private extension WidgetCryptoView {
                   Spacer()
                   Image(systemName: "chevron.right")
                     .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: .s4, height: .s4)
                     .foregroundColor(.fancy.constant.slate)
                     .allowsHitTesting(false)
@@ -157,99 +162,6 @@ private extension WidgetCryptoView {
   }
 }
 
-// MARK: - Model
-
-extension WidgetCryptoView {
-  /// Стиль текста в виджете
-  public enum TextStyle {
-    /// Цвет из стиля
-    var color: Color {
-      switch self {
-      case .standart:
-        return .fancy.constant.ghost
-      case .positive:
-        return .fancy.constant.lime
-      case .negative:
-        return .fancy.constant.ruby
-      }
-    }
-    
-    /// Стандартный белый цвет
-    case standart
-    /// Позитивный зеленый цвет
-    case positive
-    /// Негативный красный цвет
-    case negative
-  }
-  public enum LeftSide {
-    case leftSide(
-      icon: Data?,
-      title: String,
-      description: String,
-      addition: String?,
-      additionStyle: TextStyle
-    )
-  }
-  
-  public enum RightSide {
-    case rightSide(
-      isChevron: Bool,
-      title: String,
-      titleStyle: TextStyle,
-      titleIsSecure: Bool,
-      description: String,
-      descriptionSecure: Bool
-    )
-  }
-  
-  public struct Model: Identifiable {
-    /// ID для модельки
-    public let id = UUID()
-    
-    /// Левая сторона виджета
-    public let leftSide: WidgetCryptoView.LeftSide
-    
-    /// Правая сторона виджета
-    public let rightSide: WidgetCryptoView.RightSide
-    
-    /// Дополнительный текст
-    public let additionText: String?
-    
-    /// Дополнительный контент
-    public let additionContent: AnyView?
-    
-    /// Можно ли нажать на ячейку
-    public var isSelectable: Bool
-    
-    /// Замыкание, которое будет выполняться при нажатии на виджет
-    public let action: () -> Void
-    
-    // MARK: - Initialization
-    
-    /// Инициализатор для создания модельки для виджета
-    /// - Parameters:
-    ///   - leftSide: Левая сторона виджета
-    ///   - rightSide: Правая сторона виджета
-    ///   - additionText: Дополнительный текст
-    ///   - additionContent: Дополнительный контент
-    ///   - isSelectable: Можно ли нажать на ячейку
-    ///   - action: Замыкание, которое будет выполняться при нажатии на виджет
-    public init(_ leftSide: WidgetCryptoView.LeftSide,
-                _ rightSide: WidgetCryptoView.RightSide,
-                additionText: String?,
-                additionContent: AnyView? = nil,
-                isSelectable: Bool,
-                action: @escaping () -> Void) {
-      self.leftSide = leftSide
-      self.rightSide = rightSide
-      self.additionText = additionText
-      self.additionContent = additionContent
-      self.isSelectable = isSelectable
-      self.action = action
-    }
-  }
-}
-
 // MARK: - Constants
 
 private enum Constants {
@@ -284,9 +196,7 @@ struct WidgetCryptoView_Previews: PreviewProvider {
                 descriptionSecure: false
               ),
               additionText: "Welcome to the TON DNS Club tondnsclub Welcome to the TON DNS Club",
-              additionContent: AnyView(
-                MainButtonView(text: "Button", action: {})
-              ),
+              additionContent: nil,
               isSelectable: true,
               action: {}
             )
