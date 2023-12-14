@@ -120,6 +120,7 @@ struct InputCryptoWidgetView_Previews: PreviewProvider {
           )
         )
       )
+      .padding()
       Spacer()
     }
     .padding(.vertical, .s26)

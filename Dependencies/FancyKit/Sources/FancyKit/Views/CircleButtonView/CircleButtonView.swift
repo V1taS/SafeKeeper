@@ -65,7 +65,7 @@ private extension CircleButtonView {
               .clipShape(Circle())
           ),
           style: .animationZoomOut,
-          isEnabled: .constant(model.isEnabled),
+          isSelectable: model.isEnabled,
           touchesEnded: {
             model.action()
           }

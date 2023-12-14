@@ -58,7 +58,7 @@ private extension RoundButtonView {
               .roundedEdge(backgroundColor: .fancy.constant.navy)
           ),
           style: .animationZoomOut,
-          isEnabled: .constant(model.isEnabled),
+          isSelectable: model.isEnabled,
           touchesEnded: {
             model.action()
           }

@@ -27,67 +27,88 @@ public struct InputView: View {
   // MARK: - Body
   
   public var body: some View {
-    VStack {
-      HStack(spacing: .zero) {
-        if case let .leftHelper(text) = model.style {
-          Text("\(text)")
-            .font(.fancy.h3)
-            .foregroundColor(.fancy.constant.slate)
-            .lineLimit(Constants.lineLimit)
-            .truncationMode(.tail)
-            .padding(.trailing, .s2)
-            .allowsHitTesting(false)
-        }
-        
-        VStack(alignment: .leading, spacing: .zero) {
-          if case let .topHelper(text) = model.style {
+    ZStack {
+      VStack {
+        Spacer()
+        TapGestureView(
+          .init(
+            content: AnyView(
+              Color.fancy.constant.navy
+            ),
+            style: .none,
+            isImpactFeedback: false,
+            touchesBegan: {},
+            touchesEnded: {
+              isTextFieldFocused = true
+            }
+          )
+        )
+        Spacer()
+      }
+      
+      VStack {
+        HStack(spacing: .zero) {
+          if case let .leftHelper(text) = model.style {
             Text("\(text)")
-              .font(.fancy.b2Medium)
+              .font(.fancy.h3)
               .foregroundColor(.fancy.constant.slate)
               .lineLimit(Constants.lineLimit)
               .truncationMode(.tail)
-              .padding(.top, .s4)
+              .padding(.trailing, .s2)
               .allowsHitTesting(false)
           }
           
-          TextField("", text: model.$text,  axis: .vertical)
-            .onChange(of: model.text) { newValue in
-              if newValue.count > model.maxLength {
-                model.text = String(newValue.prefix(model.maxLength))
+          VStack(alignment: .leading, spacing: .zero) {
+            if case let .topHelper(text) = model.style {
+              Text("\(text)")
+                .font(.fancy.b2Medium)
+                .foregroundColor(.fancy.constant.slate)
+                .lineLimit(Constants.lineLimit)
+                .truncationMode(.tail)
+                .padding(.top, .s4)
+                .allowsHitTesting(false)
+            }
+            
+            TextField("", text: model.$text,  axis: .vertical)
+              .onChange(of: model.text) { newValue in
+                if newValue.count > model.maxLength {
+                  model.text = String(newValue.prefix(model.maxLength))
+                }
               }
+              .autocorrectionDisabled(true)
+              .keyboardType(model.keyboardType)
+              .disabled(!model.isEnabled)
+              .padding(.vertical, .s1)
+              .focused($isTextFieldFocused)
+              .lineLimit(Constants.lineLimit)
+              .font(.fancy.b1)
+              .foregroundColor(.fancy.constant.ghost)
+              .accentColor(model.isError ? .fancy.constant.ruby : .fancy.constant.azure)
+              .truncationMode(.tail)
+              .padding(.bottom, .s4)
+              .padding(.top, model.style.isTopHelper ? .zero : .s4)
+              .placeholder(when: model.text.isEmpty) {
+                Text(model.placeholder)
+                  .padding(.vertical, .s1)
+                  .foregroundColor(.fancy.constant.slate).opacity(0.3)
+                  .font(.fancy.b1)
+                  .padding(.bottom, .s4)
+                  .padding(.top, model.style.isTopHelper ? .zero : .s4)
+              }
+              .allowsHitTesting(false)
+          }
+          
+          if !model.text.isEmpty && isTextFieldFocused {
+            Button(action: {
+              model.text = ""
+            }) {
+              Image(systemName: "xmark.circle.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: .s5)
+                .foregroundColor(.fancy.constant.slate)
+                .padding(.leading, .s3)
             }
-            .focused($isTextFieldFocused)
-            .autocorrectionDisabled(true)
-            .keyboardType(model.keyboardType)
-            .disabled(!model.isEnabled)
-            .padding(.vertical, .s1)
-            .lineLimit(Constants.lineLimit)
-            .font(.fancy.b1)
-            .foregroundColor(.fancy.constant.ghost)
-            .accentColor(model.isError ? .fancy.constant.ruby : .fancy.constant.azure)
-            .truncationMode(.tail)
-            .padding(.bottom, .s4)
-            .padding(.top, model.style.isTopHelper ? .zero : .s4)
-            .placeholder(when: model.text.isEmpty) {
-              Text(model.placeholder)
-                .padding(.vertical, .s1)
-                .foregroundColor(.fancy.constant.slate).opacity(0.3)
-                .font(.fancy.b1)
-                .padding(.bottom, .s4)
-                .padding(.top, model.style.isTopHelper ? .zero : .s4)
-            }
-        }
-        
-        if !model.text.isEmpty && isTextFieldFocused {
-          Button(action: {
-            model.text = ""
-          }) {
-            Image(systemName: "xmark.circle.fill")
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(height: .s5)
-              .foregroundColor(.fancy.constant.slate)
-              .padding(.leading, .s3)
           }
         }
       }

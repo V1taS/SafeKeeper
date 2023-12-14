@@ -14,7 +14,8 @@ extension TapGestureView {
   public struct Model {
     public let style: Style
     public let content: AnyView
-    @Binding public var isEnabled: Bool
+    public let isSelectable: Bool
+    public let isImpactFeedback: Bool
     public let touchesBegan: (() -> Void)?
     public let touchesEnded: () -> Void
     
@@ -24,18 +25,21 @@ extension TapGestureView {
     /// - Parameters:
     ///   - content: Контент
     ///   - style: Стиль вью
-    ///   - isEnabled: Вью включена
+    ///   - isEnabled: Можно ли нажать на ячейку
+    ///   - isImpactFeedback: Тактильная обратная связь
     ///   - touchesBegan: Замыкание, которое будет выполняться при нажатии на вью
     ///   - touchesEnded: Замыкание, которое будет выполняться в конце выполнения кнопки
     public init(content: AnyView,
                 style: TapGestureView.Style = .flash,
-                isEnabled: Binding<Bool> = .constant(true),
+                isSelectable: Bool = true,
+                isImpactFeedback: Bool = true,
                 touchesBegan: (() -> Void)? = nil,
                 touchesEnded: @escaping () -> Void) {
       self.content = content
       self.style = style
-      self._isEnabled = isEnabled
+      self.isSelectable = isSelectable
       self.touchesBegan = touchesBegan
+      self.isImpactFeedback = isImpactFeedback
       self.touchesEnded = touchesEnded
     }
   }

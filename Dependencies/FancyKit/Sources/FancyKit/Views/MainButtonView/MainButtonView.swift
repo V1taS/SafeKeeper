@@ -51,7 +51,7 @@ public struct MainButtonView: View {
             .frame(height: .s13)
         ),
         style: .animationZoomOut,
-        isEnabled: .constant(model.isEnabled),
+        isSelectable: model.isEnabled,
         touchesEnded: {
           model.action()
         }

@@ -52,7 +52,7 @@ private extension WidgetCryptoView {
               Color.fancy.constant.navy
             ),
             style: .flash,
-            isEnabled: .constant(model.isSelectable),
+            isSelectable: model.isSelectable,
             touchesEnded: {
               model.action()
             }

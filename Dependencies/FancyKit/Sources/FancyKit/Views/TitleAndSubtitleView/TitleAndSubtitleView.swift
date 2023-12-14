@@ -39,7 +39,6 @@ public struct TitleAndSubtitleView: View {
               )
             ),
             style: .animationZoomOut,
-            isEnabled: .constant(isSelectable),
             touchesEnded: {
               action?()
             }
@@ -60,7 +59,7 @@ public struct TitleAndSubtitleView: View {
                 .multilineTextAlignment(.center)
             ),
             style: .animationZoomOut,
-            isEnabled: .constant(isSelectable),
+            isSelectable: isSelectable,
             touchesEnded: {
               action?()
             }

@@ -30,7 +30,9 @@ public struct TapGestureView: View {
   
   public var body: some View {
     Button(action: {
-      impactFeedback.impactOccurred()
+      if model.isImpactFeedback {
+        impactFeedback.impactOccurred()
+      }
       model.touchesEnded()
     }) {
       model.content
@@ -41,7 +43,7 @@ public struct TapGestureView: View {
         model.touchesBegan?()
       }
     ))
-    .disabled(!model.isEnabled)
+    .disabled(!model.isSelectable)
   }
 }
 
@@ -61,7 +63,6 @@ struct TapGestureView_Previews: PreviewProvider {
             Text("Кнопка")
           }),
           style: .animationZoomOut,
-          isEnabled: .constant(true),
           touchesBegan: {},
           touchesEnded: {}
         )
