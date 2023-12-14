@@ -12,21 +12,47 @@ public struct InputCryptoWidgetView: View {
   
   // MARK: - Private properties
   
-  @Binding private var model: InputCryptoWidgetView.Model
+  @Binding private var currencyValue: String
+  private let currencyName: String
+  
+  @Binding private var cryptoValue: String
+  private let cryptoName: String
+  
+  @Binding private var presentWidgetType: InputCryptoWidgetView.PresentWidgetType
+  private let maxLength: Int
+  private let flipAction: () -> Void
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания виджета с криптовалютой
+  /// Инициализатор для создания модельки для виджета
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: Binding<InputCryptoWidgetView.Model>) {
-    self._model = model
+  ///   - currencyValue: Значение валюты
+  ///   - currencyName: Имя валюты
+  ///   - cryptoValue: Значение криптовалюты
+  ///   - cryptoName: Имя криптовалюты
+  ///   - presentWidgetType: Тип показа данных
+  ///   - maxLength: Максимальная длина символов
+  ///   - flipAction: Перевернуть значения
+  public init(currencyValue: Binding<String>,
+              currencyName: String,
+              cryptoValue: Binding<String>,
+              cryptoName: String,
+              presentWidgetType: Binding<InputCryptoWidgetView.PresentWidgetType>,
+              maxLength: Int = 20,
+              flipAction: @escaping () -> Void) {
+    self._currencyValue = currencyValue
+    self.currencyName = currencyName
+    self._cryptoValue = cryptoValue
+    self.cryptoName = cryptoName
+    self._presentWidgetType = presentWidgetType
+    self.maxLength = maxLength
+    self.flipAction = flipAction
   }
   
   // MARK: - Body
   
   public var body: some View {
-    createExchangeWidgetCrypto(model: model)
+    createExchangeWidgetCrypto()
       .clipShape(RoundedRectangle(cornerRadius: .s5))
   }
 }
@@ -34,7 +60,7 @@ public struct InputCryptoWidgetView: View {
 // MARK: - Private
 
 private extension InputCryptoWidgetView {
-  func createExchangeWidgetCrypto(model: InputCryptoWidgetView.Model) -> AnyView {
+  func createExchangeWidgetCrypto() -> AnyView {
     AnyView(
       ZStack {
         Color.fancy.constant.navy
@@ -48,7 +74,7 @@ private extension InputCryptoWidgetView {
                 size: .small,
                 style: .custom(color: .fancy.constant.ghost.opacity(0.1)),
                 action: {
-                  model.flipAction()
+                  flipAction()
                 }
               )
             )
@@ -60,15 +86,11 @@ private extension InputCryptoWidgetView {
           Spacer()
           
           HStack(alignment: .bottom, spacing: .s2) {
-            Text(model.crypto.value)
-              .font(.fancy.largeTitle)
-              .fontWeight(.bold)
-              .foregroundColor(.fancy.constant.ghost)
-              .lineLimit(Constants.lineLimit)
-              .truncationMode(.tail)
-              .allowsHitTesting(false)
+            InputContentSizeView(
+              text: $cryptoValue
+            )
             
-            Text(model.crypto.name)
+            Text(cryptoName)
               .font(.fancy.h1)
               .fontWeight(.semibold)
               .foregroundColor(.fancy.constant.slate)
@@ -77,7 +99,7 @@ private extension InputCryptoWidgetView {
               .allowsHitTesting(false)
           }
           
-          Text("\(model.currency.value) \(model.currency.name)")
+          Text("\(currencyValue) \(currencyName)")
             .font(.fancy.h3)
             .foregroundColor(.fancy.constant.slate)
             .lineLimit(Constants.lineLimit)
@@ -102,6 +124,18 @@ private enum Constants {
   static let lineLimit = 1
 }
 
+// MARK: - PresentWidgetType
+
+extension InputCryptoWidgetView {
+  public enum PresentWidgetType {
+    /// Стандартный показ (Криптовалюта сверху)
+    case standart
+    
+    /// Перевернутый показ (Криптовалюта снизу)
+    case reverse
+  }
+}
+
 // MARK: - Preview
 
 struct InputCryptoWidgetView_Previews: PreviewProvider {
@@ -110,15 +144,12 @@ struct InputCryptoWidgetView_Previews: PreviewProvider {
       Spacer()
       HStack{ Spacer() }
       InputCryptoWidgetView(
-        .constant(
-          .init(
-            .constant(.init(value: .constant("270.15"), name: "USD")),
-            .constant(.init(value: .constant("112"), name: "TON")),
-            showType: .constant(.standart),
-            maxLength: 100,
-            flipAction: {}
-          )
-        )
+        currencyValue: .constant("270.15"),
+        currencyName: "USD",
+        cryptoValue: .constant("112"),
+        cryptoName: "TON",
+        presentWidgetType: .constant(.standart),
+        flipAction: {}
       )
       .padding()
       Spacer()

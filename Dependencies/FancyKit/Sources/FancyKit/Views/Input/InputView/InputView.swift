@@ -33,7 +33,7 @@ public struct InputView: View {
         TapGestureView(
           .init(
             content: AnyView(
-              Color.fancy.constant.navy
+              model.backgroundColor ?? Color.fancy.constant.navy
             ),
             style: .none,
             isImpactFeedback: false,
@@ -69,7 +69,7 @@ public struct InputView: View {
                 .allowsHitTesting(false)
             }
             
-            TextField("", text: model.$text,  axis: .vertical)
+            TextField("", text: model.$text, axis: .vertical)
               .onChange(of: model.text) { newValue in
                 if newValue.count > model.maxLength {
                   model.text = String(newValue.prefix(model.maxLength))
@@ -81,7 +81,7 @@ public struct InputView: View {
               .padding(.vertical, .s1)
               .focused($isTextFieldFocused)
               .lineLimit(Constants.lineLimit)
-              .font(.fancy.b1)
+              .font(model.textFont ?? .fancy.b1)
               .foregroundColor(.fancy.constant.ghost)
               .accentColor(model.isError ? .fancy.constant.ruby : .fancy.constant.azure)
               .truncationMode(.tail)
@@ -91,14 +91,14 @@ public struct InputView: View {
                 Text(model.placeholder)
                   .padding(.vertical, .s1)
                   .foregroundColor(.fancy.constant.slate).opacity(0.3)
-                  .font(.fancy.b1)
+                  .font(model.textFont ?? .fancy.b1)
                   .padding(.bottom, .s4)
                   .padding(.top, model.style.isTopHelper ? .zero : .s4)
               }
               .allowsHitTesting(false)
           }
           
-          if !model.text.isEmpty && isTextFieldFocused {
+          if (!model.text.isEmpty && isTextFieldFocused) {
             Button(action: {
               model.text = ""
             }) {
@@ -115,12 +115,11 @@ public struct InputView: View {
     }
     .frame(width: .infinity)
     .padding(.horizontal, .s4)
-    .background(Color.fancy.constant.navy)
+    .background(model.backgroundColor ?? Color.fancy.constant.navy)
     .overlay(
       RoundedRectangle(cornerRadius: .s5)
         .stroke(
-          model.isError ? .fancy.constant.ruby :
-            isTextFieldFocused ? Color.fancy.constant.azure : Color.clear,
+          getColorFocusBorder(),
           lineWidth: .s1 / 1.5
         )
     )
@@ -130,7 +129,15 @@ public struct InputView: View {
 
 // MARK: - Private
 
-private extension InputView {}
+private extension InputView {
+  func getColorFocusBorder() -> Color {
+    guard model.isColorFocusBorder else {
+      return .clear
+    }
+    return model.isError ? .fancy.constant.ruby :
+    isTextFieldFocused ? Color.fancy.constant.azure : Color.clear
+  }
+}
 
 // MARK: - Constants
 

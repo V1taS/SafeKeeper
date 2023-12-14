@@ -18,6 +18,9 @@ struct RootView: View {
   @State private var inputViewTwo = ""
   @State private var inputViewThree = ""
   @State private var isErrorThree = true
+  @State private var inputContentSize = "12"
+  
+  @State private var currency = "112"
   
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -28,14 +31,12 @@ struct RootView: View {
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
           InputCryptoWidgetView(
-            .constant(
-              .init(
-                .constant(.init(value: .constant("270.15"), name: "USD")),
-                .constant(.init(value: .constant("112"), name: "TON")),
-                showType: .constant(.standart),
-                flipAction: {}
-              )
-            )
+            currencyValue: .constant("270.15"),
+            currencyName: "USD",
+            cryptoValue: $currency,
+            cryptoName: "TON",
+            presentWidgetType: .constant(.standart),
+            flipAction: {}
           )
           .frame(height: 300)
           
