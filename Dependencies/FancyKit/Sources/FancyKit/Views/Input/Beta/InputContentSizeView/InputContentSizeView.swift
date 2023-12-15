@@ -75,14 +75,12 @@ struct InputContentSizeView_Previews: PreviewProvider {
   static var previews: some View {
     VStack(spacing: .s4) {
       Spacer()
-      
       HStack {
         InputContentSizeView(
           text: .constant("123")
         )
         Circle()
       }
-      
       Spacer()
     }
     .padding(.horizontal)

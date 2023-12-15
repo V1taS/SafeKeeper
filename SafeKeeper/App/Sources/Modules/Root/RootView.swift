@@ -30,16 +30,6 @@ struct RootView: View {
       
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
-          InputCryptoWidgetView(
-            currencyValue: .constant("270.15"),
-            currencyName: "USD",
-            cryptoValue: $currency,
-            cryptoName: "TON",
-            presentWidgetType: .constant(.standart),
-            flipAction: {}
-          )
-          .frame(height: 300)
-          
           HStack {
             RoundButtonView(
               .init(
