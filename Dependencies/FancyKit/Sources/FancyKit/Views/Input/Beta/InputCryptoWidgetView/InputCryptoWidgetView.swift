@@ -69,14 +69,12 @@ private extension InputCryptoWidgetView {
           HStack {
             Spacer()
             CircleButtonView(
-              .init(
-                type: .custom(systemNameImage: "arrow.up.arrow.down"),
-                size: .small,
-                style: .custom(color: .fancy.constant.ghost.opacity(0.1)),
-                action: {
-                  flipAction()
-                }
-              )
+              type: .custom(systemNameImage: "arrow.up.arrow.down"),
+              size: .small,
+              style: .custom(color: .fancy.constant.ghost.opacity(0.1)),
+              action: {
+                flipAction()
+              }
             )
             .foregroundColor(Color.fancy.constant.ghost)
           }

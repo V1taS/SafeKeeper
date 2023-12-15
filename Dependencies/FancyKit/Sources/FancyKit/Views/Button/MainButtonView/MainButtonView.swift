@@ -12,50 +12,61 @@ public struct MainButtonView: View {
   
   // MARK: - Private properties
   
-  private let model: MainButtonView.Model
+  @Binding private var text: String
+  @Binding private var isEnabled: Bool
+  
+  private let style: MainButtonView.Style
+  private let action: () -> Void
   
   // MARK: - Initialization
   
   /// Инициализатор для создания основной кнопки
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: MainButtonView.Model) {
-    self.model = model
+  ///   - text: Текст, который будет отображаться на кнопке
+  ///   - isEnabled: Кнопка включена
+  ///   - style: Стиль кнопки
+  ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
+  public init(text: Binding<String>,
+              isEnabled: Binding<Bool> = .constant(true),
+              style: MainButtonView.Style = .primary,
+              action: @escaping () -> Void) {
+    self._text = text
+    self.style = style
+    self._isEnabled = isEnabled
+    self.action = action
   }
   
   // MARK: - Body
   
   public var body: some View {
     TapGestureView(
-      .init(
-        content: AnyView(
-          ZStack {
-            LinearGradient(
-              gradient: Gradient(
-                colors: model.isEnabled ? model.style.enabledColors : model.style.disabledColors
-              ),
-              startPoint: .leading,
-              endPoint: .trailing
-            )
-            
-            Text(model.text)
-              .font(.fancy.h3)
-              .foregroundColor(.fancy.constant.ghost)
-              .padding(.s4)
-              .frame(maxWidth: .infinity)
-              .lineLimit(Constants.lineLimit)
-              .truncationMode(.tail)
-              .allowsHitTesting(false)
-          }
-            .clipShape(RoundedRectangle(cornerRadius: .s4))
-            .frame(height: .s13)
-        ),
-        style: .animationZoomOut,
-        isSelectable: model.isEnabled,
-        touchesEnded: {
-          model.action()
+      content: AnyView(
+        ZStack {
+          LinearGradient(
+            gradient: Gradient(
+              colors: isEnabled ? style.enabledColors : style.disabledColors
+            ),
+            startPoint: .leading,
+            endPoint: .trailing
+          )
+          
+          Text(text)
+            .font(.fancy.h3)
+            .foregroundColor(.fancy.constant.ghost)
+            .padding(.s4)
+            .frame(maxWidth: .infinity)
+            .lineLimit(Constants.lineLimit)
+            .truncationMode(.tail)
+            .allowsHitTesting(false)
         }
-      )
+          .clipShape(RoundedRectangle(cornerRadius: .s4))
+          .frame(height: .s13)
+      ),
+      style: .animationZoomOut,
+      isSelectable: isEnabled,
+      touchesEnded: {
+        action()
+      }
     )
   }
 }
@@ -74,44 +85,19 @@ struct MainButtonView_Previews: PreviewProvider {
       Spacer()
       VStack {
         MainButtonView(
-          .init(
-            text: "Кнопка primary",
-            style: .primary,
-            isEnabled: .constant(true),
-            action: {}
-          )
+          text: .constant("Кнопка primary"),
+          isEnabled: .constant(true),
+          style: .primary,
+          action: {}
         )
         
         MainButtonView(
-          .init(
-            text: "Кнопка primary",
-            style: .primary,
-            isEnabled: .constant(false),
-            action: {}
-          )
+          text: .constant("Кнопка secondary"),
+          isEnabled: .constant(true),
+          style: .secondary,
+          action: {}
         )
       }
-      
-      VStack {
-        MainButtonView(
-          .init(
-            text: "Кнопка secondary",
-            style: .secondary,
-            isEnabled: .constant(true),
-            action: {}
-          )
-        )
-        
-        MainButtonView(
-          .init(
-            text: "Кнопка secondary",
-            style: .secondary,
-            isEnabled: .constant(false),
-            action: {}
-          )
-        )
-      }
-      .padding(.top)
       Spacer()
     }
     .background(Color.fancy.constant.onyx)

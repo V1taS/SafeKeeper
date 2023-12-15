@@ -8,42 +8,60 @@
 import SwiftUI
 import FancyStyle
 
-
-
 public struct TapGestureView: View {
   
   // MARK: - Private properties
   
-  private let model: TapGestureView.Model
+  private let content: AnyView
+  private let style: Style
+  private let isSelectable: Bool
+  private let isImpactFeedback: Bool
+  private let touchesBegan: (() -> Void)?
+  private let touchesEnded: () -> Void
   private let impactFeedback = UIImpactFeedbackGenerator(style: .soft)
   
   // MARK: - Initialization
   
   /// Инициализатор для создания основной кнопки
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: TapGestureView.Model) {
-    self.model = model
+  ///   - content: Контент
+  ///   - style: Стиль вью
+  ///   - isEnabled: Можно ли нажать на ячейку
+  ///   - isImpactFeedback: Тактильная обратная связь
+  ///   - touchesBegan: Замыкание, которое будет выполняться при нажатии на вью
+  ///   - touchesEnded: Замыкание, которое будет выполняться в конце выполнения кнопки
+  public init(content: AnyView,
+              style: TapGestureView.Style = .flash,
+              isSelectable: Bool = true,
+              isImpactFeedback: Bool = true,
+              touchesBegan: (() -> Void)? = nil,
+              touchesEnded: @escaping () -> Void) {
+    self.content = content
+    self.style = style
+    self.isSelectable = isSelectable
+    self.touchesBegan = touchesBegan
+    self.isImpactFeedback = isImpactFeedback
+    self.touchesEnded = touchesEnded
   }
   
   // MARK: - Body
   
   public var body: some View {
     Button(action: {
-      if model.isImpactFeedback {
+      if isImpactFeedback {
         impactFeedback.impactOccurred()
       }
-      model.touchesEnded()
+      touchesEnded()
     }) {
-      model.content
+      content
     }
     .buttonStyle(TapGestureFlashStyle(
-      style: model.style,
+      style: style,
       touchesBegan: {
-        model.touchesBegan?()
+        touchesBegan?()
       }
     ))
-    .disabled(!model.isSelectable)
+    .disabled(!isSelectable)
   }
 }
 
@@ -57,15 +75,13 @@ struct TapGestureView_Previews: PreviewProvider {
       }
       Spacer()
       TapGestureView(
-        .init(
-          content: AnyView(ZStack {
-            Color.fancy.constant.navy
-            Text("Кнопка")
-          }),
-          style: .animationZoomOut,
-          touchesBegan: {},
-          touchesEnded: {}
-        )
+        content: AnyView(ZStack {
+          Color.fancy.constant.navy
+          Text("Кнопка")
+        }),
+        style: .animationZoomOut,
+        touchesBegan: {},
+        touchesEnded: {}
       )
       .frame(width: 200, height: 200)
       Spacer()

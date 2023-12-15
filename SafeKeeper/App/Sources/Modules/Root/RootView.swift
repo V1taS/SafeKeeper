@@ -32,106 +32,102 @@ struct RootView: View {
         VStack(spacing: 16) {
           HStack {
             RoundButtonView(
-              .init(
-                style: .copy(text: "Copy"),
-                action: {}
-              )
+              style: .copy(text: "Copy"),
+              action: {}
             )
             
             RoundButtonView(
-              .init(
-                style: .custom(image: nil, text: "Max"),
-                action: {}
-              )
+              style: .custom(imageData: nil, text: "Max"),
+              action: {}
             )
           }
           .padding(.bottom)
           
           QRCodeView(
-            .init(
-              iconData: UIImage(systemName: "link.circle")?.pngData(),
-              dataString: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf"
-            )
+            iconData: UIImage(systemName: "link.circle")?.pngData(),
+            dataString: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf"
           )
           .padding(.bottom)
           
           TitleAndSubtitleView(
-            model: .init(
-              .title(
-                text: "$ 153,04",
-                lineLimit: 1,
-                isSelectable: true,
-                isSecure: false,
-                action: {}
-              ),
-              .description(
-                text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
-                lineLimit: 1,
-                isSelectable: true,
-                isSecure: false,
-                action: {}),
-              alignment: .center,
-              style: .large
-            )
+            .title(
+              text: "$ 153,04",
+              lineLimit: 1,
+              isSelectable: true,
+              isSecure: false,
+              action: {}
+            ),
+            .description(
+              text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+              lineLimit: 1,
+              isSelectable: true,
+              isSecure: false,
+              action: {}),
+            alignment: .center,
+            style: .large
           )
           .padding(.bottom)
           
           TitleAndSubtitleView(
-            model: .init(
-              .title(
-                text: "",
-                lineLimit: 1,
-                isSelectable: true,
-                isSecure: true,
-                action: {}
-              ),
-              .description(
-                text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
-                lineLimit: 1,
-                isSelectable: true,
-                isSecure: false,
-                action: {}),
-              alignment: .center,
-              style: .large
-            )
+            .title(
+              text: "",
+              lineLimit: 1,
+              isSelectable: true,
+              isSecure: true,
+              action: {}
+            ),
+            .description(
+              text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+              lineLimit: 1,
+              isSelectable: true,
+              isSecure: false,
+              action: {}),
+            alignment: .center,
+            style: .large
           )
           .padding(.bottom)
           
           Group {
             InputView(
-              .init(
-                text: $inputViewOne,
-                placeholder: "Input view one",
-                style: .none,
-                keyboardType: .default,
-                isEnabled: .constant(true),
-                maxLength: 7,
-                isError: .constant(false)
-              )
+              text: $inputViewOne,
+              isError: .constant(false),
+              isEnabled: .constant(true),
+              isTextFieldFocused: .constant(nil),
+              isColorFocusBorder: .constant(true),
+              placeholder: "Input view one",
+              style: .none,
+              keyboardType: .default,
+              maxLength: 10,
+              textFont: nil,
+              backgroundColor: nil
             )
             
             InputView(
-              .init(
-                text: $inputViewTwo,
-                placeholder: "Input view two",
-                style: .leftHelper(text: "22:"),
-                keyboardType: .numberPad,
-                isEnabled: .constant(true),
-                maxLength: 20,
-                isError: .constant(false)
-              )
+              text: $inputViewTwo,
+              isError: .constant(false),
+              isEnabled: .constant(true),
+              isTextFieldFocused: .constant(nil),
+              isColorFocusBorder: .constant(true),
+              placeholder: "Input view two",
+              style: .leftHelper(text: "22:"),
+              keyboardType: .default,
+              maxLength: 20,
+              textFont: nil,
+              backgroundColor: nil
             )
             
             InputView(
-              .init(
-                text: $inputViewThree,
-                placeholder: "Input view three",
-                style: .topHelper(text: "Comments"),
-                keyboardType: .default,
-                isEnabled: .constant(true),
-                maxLength: 10,
-                isError: $isErrorThree
-              )
+              text: $inputViewThree,
+              isError: .constant(true),
+              isEnabled: .constant(true),
+              isTextFieldFocused: .constant(nil),
+              isColorFocusBorder: .constant(true),
+              placeholder: "Input view three",
+              style: .topHelper(text: "Comments"),
+              keyboardType: .default,
+              maxLength: 10,
+              textFont: nil,
+              backgroundColor: nil
             )
           }
           
@@ -139,21 +135,16 @@ struct RootView: View {
             HStack {
               Spacer()
               CircleButtonView(
-                .init(
-                  text: "Send",
-                  type: .receive,
-                  size: .large,
-                  action: {}
-                )
+                text: "Send",
+                type: .custom(systemNameImage: "arrow.up.arrow.down"),
+                size: .large,
+                action: {}
               )
-              
               CircleButtonView(
-                .init(
-                  text: "Receive",
-                  type: .receive,
-                  size: .small,
-                  action: {}
-                )
+                text: "Receive",
+                type: .receive,
+                size: .small,
+                action: {}
               )
               Spacer()
             }
@@ -244,10 +235,10 @@ struct RootView: View {
                 additionText: "Welcome to the TON DNS Club tondnsclub",
                 additionContent: AnyView(
                   MainButtonView(
-                    .init(
-                      text: "Any view here",
-                      action: {}
-                    )
+                    text: .constant("Any view here"),
+                    isEnabled: .constant(true),
+                    style: .primary,
+                    action: {}
                   )
                 ),
                 isSelectable: true,
@@ -344,21 +335,17 @@ struct RootView: View {
           Group {
             VStack {
               MainButtonView(
-                .init(
-                  text: "Кнопка primary",
-                  style: .primary,
-                  isEnabled: .constant(true),
-                  action: {}
-                )
+                text: .constant("Кнопка primary"),
+                isEnabled: .constant(true),
+                style: .primary,
+                action: {}
               )
               
               MainButtonView(
-                .init(
-                  text: "Кнопка secondary",
-                  style: .secondary,
-                  isEnabled: .constant(true),
-                  action: {}
-                )
+                text: .constant("Кнопка secondary"),
+                isEnabled: .constant(true),
+                style: .secondary,
+                action: {}
               )
             }
           }

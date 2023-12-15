@@ -12,58 +12,69 @@ public struct TitleAndSubtitleView: View {
   
   // MARK: - Private properties
   
-  private let model: TitleAndSubtitleView.Model
+  private let title: TitleAndSubtitleView.Title
+  private let description: TitleAndSubtitleView.Description
+  private let alignment: HorizontalAlignment
+  private let style: TitleAndSubtitleView.Style
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания заголовка и подзаголовка
+  /// Инициализатор для создания модельки
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(model: TitleAndSubtitleView.Model) {
-    self.model = model
+  ///   - title: Заголовок
+  ///   - description: Описание
+  ///   - alignment: Выравнивание всего контента
+  ///   - style: Стиль
+  public init(
+    _ title: TitleAndSubtitleView.Title,
+    _ description: TitleAndSubtitleView.Description,
+    alignment: HorizontalAlignment = .center,
+    style: TitleAndSubtitleView.Style = .large
+  ) {
+    self.title = title
+    self.description = description
+    self.alignment = alignment
+    self.style = style
   }
   
   // MARK: - Body
   
   public var body: some View {
-    VStack(alignment: model.alignment, spacing: .zero) {
+    VStack(alignment: alignment, spacing: .zero) {
       // Заголовок
-      if case let .title(text, lineLimit, isSelectable, isSecure, action) = model.title {
+      if case let .title(text, lineLimit, isSelectable, isSecure, action) = title {
         TapGestureView(
-          .init(
-            content: AnyView(
-              getTitleView(
-                with: isSecure,
-                text: text,
-                lineLimit: lineLimit
-              )
-            ),
-            style: .animationZoomOut,
-            touchesEnded: {
-              action?()
-            }
-          )
+          content: AnyView(
+            getTitleView(
+              with: isSecure,
+              text: text,
+              lineLimit: lineLimit
+            )
+          ),
+          style: .animationZoomOut,
+          isSelectable: isSelectable,
+          touchesEnded: {
+            action?()
+          }
         )
       }
       
       // Описание
-      if case let .description(text, lineLimit, isSelectable, isSecure, action) = model.description {
+      if case let .description(text, lineLimit, isSelectable, isSecure, action) = description {
         TapGestureView(
-          .init(
-            content: AnyView(
-              Text(isSecure ? Constants.secureText : text)
-                .font(.fancy.b1)
-                .foregroundColor(.fancy.constant.slate)
-                .lineLimit(lineLimit)
-                .truncationMode(.middle)
-                .multilineTextAlignment(.center)
-            ),
-            style: .animationZoomOut,
-            isSelectable: isSelectable,
-            touchesEnded: {
-              action?()
-            }
-          )
+          content: AnyView(
+            Text(isSecure ? Constants.secureText : text)
+              .font(.fancy.b1)
+              .foregroundColor(.fancy.constant.slate)
+              .lineLimit(lineLimit)
+              .truncationMode(.middle)
+              .multilineTextAlignment(.center)
+          ),
+          style: .animationZoomOut,
+          isSelectable: isSelectable,
+          touchesEnded: {
+            action?()
+          }
         )
         .padding(.top, .s2)
       }
@@ -86,7 +97,7 @@ private extension TitleAndSubtitleView {
     } else {
       return AnyView(
         Text(isSecure ? Constants.secureText : text)
-          .font(model.style.fontTitle)
+          .font(style.fontTitle)
           .foregroundColor(.fancy.constant.ghost)
           .lineLimit(lineLimit)
           .truncationMode(.tail)
@@ -113,23 +124,21 @@ struct TitleAndSubtitleView_Previews: PreviewProvider {
         }
         Spacer()
         TitleAndSubtitleView(
-          model: .init(
-            .title(
-              text: "$ 153,04",
-              lineLimit: 1,
-              isSelectable: true,
-              isSecure: true,
-              action: {}
-            ),
-            .description(
-              text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
-              lineLimit: 1,
-              isSelectable: true,
-              isSecure: false,
-              action: {}),
-            alignment: .center,
-            style: .large
-          )
+          .title(
+            text: "$ 153,04",
+            lineLimit: 1,
+            isSelectable: true,
+            isSecure: true,
+            action: {}
+          ),
+          .description(
+            text: "UQApvTCMascwAmF_LVtNJeEIUzZUOGR_h66t8FilkNf",
+            lineLimit: 1,
+            isSelectable: true,
+            isSecure: false,
+            action: {}),
+          alignment: .center,
+          style: .large
         )
         Spacer()
       }

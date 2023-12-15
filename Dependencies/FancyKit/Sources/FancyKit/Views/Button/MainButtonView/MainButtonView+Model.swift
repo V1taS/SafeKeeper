@@ -7,35 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Model
-
-extension MainButtonView {
-  public struct Model {
-    public let text: String
-    public let style: Style
-    @Binding public var isEnabled: Bool
-    public let action: () -> Void
-    
-    // MARK: - Initialization
-    
-    /// Инициализатор для создания основной кнопки
-    /// - Parameters:
-    ///   - text: Текст, который будет отображаться на кнопке
-    ///   - style: Стиль кнопки
-    ///   - isEnabled: Кнопка включена
-    ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
-    public init(text: String,
-                style: MainButtonView.Style = .primary,
-                isEnabled: Binding<Bool> = .constant(true),
-                action: @escaping () -> Void) {
-      self.text = text
-      self.style = style
-      self._isEnabled = isEnabled
-      self.action = action
-    }
-  }
-}
-
 // MARK: - Style
 
 extension MainButtonView {

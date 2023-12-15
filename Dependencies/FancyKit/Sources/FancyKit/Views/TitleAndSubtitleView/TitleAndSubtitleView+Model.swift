@@ -7,46 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Model
-
-extension TitleAndSubtitleView {
-  public struct Model: Identifiable {
-    /// ID для модельки
-    public let id = UUID()
-    
-    /// Заголовок
-    public let title: TitleAndSubtitleView.Title
-    
-    /// Описание
-    public let description: TitleAndSubtitleView.Description
-    
-    /// Выравнивание всего контента
-    public var alignment: HorizontalAlignment = .center
-    /// Стиль
-    public var style: TitleAndSubtitleView.Style = .large
-    
-    // MARK: - Initialization
-    
-    /// Инициализатор для создания модельки
-    /// - Parameters:
-    ///   - title: Заголовок
-    ///   - description: Описание
-    ///   - alignment: Выравнивание всего контента
-    ///   - style: Стиль
-    public init(
-      _ title: TitleAndSubtitleView.Title,
-      _ description: TitleAndSubtitleView.Description,
-      alignment: HorizontalAlignment = .center,
-      style: TitleAndSubtitleView.Style = .large
-    ) {
-      self.title = title
-      self.description = description
-      self.alignment = alignment
-      self.style = style
-    }
-  }
-}
-
 // MARK: - Style
 
 extension TitleAndSubtitleView {

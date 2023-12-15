@@ -12,16 +12,57 @@ public struct InputView: View {
   
   // MARK: - Private properties
   
-  private let model: InputView.Model
+  @Binding private var text: String
+  @Binding private var isError: Bool
+  @Binding private var isEnabled: Bool
   @FocusState private var isTextFieldFocused: Bool
+  @Binding private var isTextFieldFocusedBinding: Bool?
+  @Binding private var isColorFocusBorder: Bool
+  
+  private let placeholder: String
+  private let style: InputView.Style
+  private let keyboardType: UIKeyboardType
+  private let maxLength: Int
+  private let textFont: Font?
+  private let backgroundColor: Color?
   
   // MARK: - Initialization
   
   /// Инициализатор для создания текстового поля
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: InputView.Model) {
-    self.model = model
+  ///   - text: Текст, который будет помещен в текстовое поле
+  ///   - isError: Ошибка в поле
+  ///   - isEnabled: Текстовое поле включено
+  ///   - isTextFieldFocused: Фокус на текстовое поле
+  ///   - isColorFocusBorder: Подсвечивать границы при фокусировки текстового поля
+  ///   - placeholder: Подсказка для ввода
+  ///   - style: Стиль текстового ввода
+  ///   - keyboardType: Стиль клавиатуры
+  ///   - maxLength: Максимальная длина символов
+  ///   - textFont: Шрифт для текстового поля
+  ///   - backgroundColor: Цвет фона
+  public init(text: Binding<String>,
+              isError: Binding<Bool> = .constant(false),
+              isEnabled: Binding<Bool> = .constant(true),
+              isTextFieldFocused: Binding<Bool?> = .constant(nil),
+              isColorFocusBorder: Binding<Bool> = .constant(true),
+              placeholder: String,
+              style: InputView.Style = .none,
+              keyboardType: UIKeyboardType = .default,
+              maxLength: Int = 100,
+              textFont: Font? = nil,
+              backgroundColor: Color? = nil) {
+    self._text = text
+    self._isError = isError
+    self._isEnabled = isEnabled
+    self._isTextFieldFocusedBinding = isTextFieldFocused
+    self._isColorFocusBorder = isColorFocusBorder
+    self.placeholder = placeholder
+    self.style = style
+    self.keyboardType = keyboardType
+    self.maxLength = maxLength
+    self.textFont = textFont
+    self.backgroundColor = backgroundColor
   }
   
   // MARK: - Body
@@ -31,24 +72,22 @@ public struct InputView: View {
       VStack {
         Spacer()
         TapGestureView(
-          .init(
-            content: AnyView(
-              model.backgroundColor ?? Color.fancy.constant.navy
-            ),
-            style: .none,
-            isImpactFeedback: false,
-            touchesBegan: {},
-            touchesEnded: {
-              isTextFieldFocused = true
-            }
-          )
+          content: AnyView(
+            backgroundColor ?? Color.fancy.constant.navy
+          ),
+          style: .none,
+          isImpactFeedback: false,
+          touchesBegan: {},
+          touchesEnded: {
+            isTextFieldFocused = true
+          }
         )
         Spacer()
       }
       
       VStack {
         HStack(spacing: .zero) {
-          if case let .leftHelper(text) = model.style {
+          if case let .leftHelper(text) = style {
             Text("\(text)")
               .font(.fancy.h3)
               .foregroundColor(.fancy.constant.slate)
@@ -59,7 +98,7 @@ public struct InputView: View {
           }
           
           VStack(alignment: .leading, spacing: .zero) {
-            if case let .topHelper(text) = model.style {
+            if case let .topHelper(text) = style {
               Text("\(text)")
                 .font(.fancy.b2Medium)
                 .foregroundColor(.fancy.constant.slate)
@@ -69,38 +108,38 @@ public struct InputView: View {
                 .allowsHitTesting(false)
             }
             
-            TextField("", text: model.$text, axis: .vertical)
-              .onChange(of: model.text) { newValue in
-                if newValue.count > model.maxLength {
-                  model.text = String(newValue.prefix(model.maxLength))
+            TextField("", text: $text, axis: .vertical)
+              .onChange(of: text) { newValue in
+                if newValue.count > maxLength {
+                  text = String(newValue.prefix(maxLength))
                 }
               }
               .autocorrectionDisabled(true)
-              .keyboardType(model.keyboardType)
-              .disabled(!model.isEnabled)
+              .keyboardType(keyboardType)
+              .disabled(!isEnabled)
               .padding(.vertical, .s1)
               .focused($isTextFieldFocused)
               .lineLimit(Constants.lineLimit)
-              .font(model.textFont ?? .fancy.b1)
+              .font(textFont ?? .fancy.b1)
               .foregroundColor(.fancy.constant.ghost)
-              .accentColor(model.isError ? .fancy.constant.ruby : .fancy.constant.azure)
+              .accentColor(isError ? .fancy.constant.ruby : .fancy.constant.azure)
               .truncationMode(.tail)
               .padding(.bottom, .s4)
-              .padding(.top, model.style.isTopHelper ? .zero : .s4)
-              .placeholder(when: model.text.isEmpty) {
-                Text(model.placeholder)
+              .padding(.top, style.isTopHelper ? .zero : .s4)
+              .placeholder(when: text.isEmpty) {
+                Text(placeholder)
                   .padding(.vertical, .s1)
                   .foregroundColor(.fancy.constant.slate).opacity(0.3)
-                  .font(model.textFont ?? .fancy.b1)
+                  .font(textFont ?? .fancy.b1)
                   .padding(.bottom, .s4)
-                  .padding(.top, model.style.isTopHelper ? .zero : .s4)
+                  .padding(.top, style.isTopHelper ? .zero : .s4)
               }
               .allowsHitTesting(false)
           }
           
-          if (!model.text.isEmpty && isTextFieldFocused) {
+          if (!text.isEmpty && isTextFieldFocused) {
             Button(action: {
-              model.text = ""
+              text = ""
             }) {
               Image(systemName: "xmark.circle.fill")
                 .resizable()
@@ -115,7 +154,7 @@ public struct InputView: View {
     }
     .frame(width: .infinity)
     .padding(.horizontal, .s4)
-    .background(model.backgroundColor ?? Color.fancy.constant.navy)
+    .background(backgroundColor ?? Color.fancy.constant.navy)
     .overlay(
       RoundedRectangle(cornerRadius: .s5)
         .stroke(
@@ -124,6 +163,11 @@ public struct InputView: View {
         )
     )
     .clipShape(RoundedRectangle(cornerRadius: .s5))
+    .onChange(of: isTextFieldFocusedBinding) { newValue in
+      if let newValue {
+        isTextFieldFocused = newValue
+      }
+    }
   }
 }
 
@@ -131,10 +175,10 @@ public struct InputView: View {
 
 private extension InputView {
   func getColorFocusBorder() -> Color {
-    guard model.isColorFocusBorder else {
+    guard isColorFocusBorder else {
       return .clear
     }
-    return model.isError ? .fancy.constant.ruby :
+    return isError ? .fancy.constant.ruby :
     isTextFieldFocused ? Color.fancy.constant.azure : Color.clear
   }
 }
@@ -167,39 +211,17 @@ struct InputView_Previews: PreviewProvider {
     VStack(spacing: .s4) {
       Spacer()
       InputView(
-        .init(
-          text: .constant(""),
-          placeholder: "Input view one",
-          style: .none,
-          keyboardType: .default,
-          isEnabled: .constant(true),
-          maxLength: 7,
-          isError: .constant(false)
-        )
-      )
-      
-      InputView(
-        .init(
-          text: .constant(""),
-          placeholder: "Input view two",
-          style: .leftHelper(text: "22:"),
-          keyboardType: .numberPad,
-          isEnabled: .constant(true),
-          maxLength: 20,
-          isError: .constant(false)
-        )
-      )
-      
-      InputView(
-        .init(
-          text: .constant(""),
-          placeholder: "Input view one",
-          style: .topHelper(text: "Comments"),
-          keyboardType: .default,
-          isEnabled: .constant(true),
-          maxLength: 7,
-          isError: .constant(true)
-        )
+        text: .constant("Hello world"),
+        isError: .constant(false),
+        isEnabled: .constant(true),
+        isTextFieldFocused: .constant(nil),
+        isColorFocusBorder: .constant(true),
+        placeholder: "Placeholder",
+        style: .none,
+        keyboardType: .default,
+        maxLength: 10,
+        textFont: nil,
+        backgroundColor: nil
       )
       Spacer()
     }

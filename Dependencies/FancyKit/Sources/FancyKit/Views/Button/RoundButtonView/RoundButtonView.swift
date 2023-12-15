@@ -12,15 +12,24 @@ public struct RoundButtonView: View {
   
   // MARK: - Private properties
   
-  private let model: RoundButtonView.Model
+  @Binding private var isEnabled: Bool
+  
+  private let style: RoundButtonView.Style
+  private let action: () -> Void
   
   // MARK: - Initialization
   
   /// Инициализатор для создания овальной кнопки
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: RoundButtonView.Model) {
-    self.model = model
+  ///   - isEnabled: Кнопка включена
+  ///   - style: Стиль кнопки
+  ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
+  public init(isEnabled: Binding<Bool> = .constant(true),
+              style: RoundButtonView.Style,
+              action: @escaping () -> Void) {
+    self.style = style
+    self._isEnabled = isEnabled
+    self.action = action
   }
   
   // MARK: - Body
@@ -36,33 +45,31 @@ private extension RoundButtonView {
   func createRoundButtonView() -> AnyView {
     AnyView(
       TapGestureView(
-        .init(
-          content: AnyView(
-            HStack(alignment: .center, spacing: .s2) {
-              if let image = model.style.image {
-                Image(uiImage: image)
-                  .resizable()
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width: .s4, height: .s4)
-                  .allowsHitTesting(false)
-              }
-              
-              Text(model.style.text)
-                .font(.fancy.b1Medium)
-                .foregroundColor(.fancy.constant.ghost)
-                .lineLimit(1)
-                .truncationMode(.tail)
+        content: AnyView(
+          HStack(alignment: .center, spacing: .s2) {
+            if let image = style.image {
+              Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: .s4, height: .s4)
                 .allowsHitTesting(false)
-                .multilineTextAlignment(.center)
             }
-              .roundedEdge(backgroundColor: .fancy.constant.navy)
-          ),
-          style: .animationZoomOut,
-          isSelectable: model.isEnabled,
-          touchesEnded: {
-            model.action()
+            
+            Text(style.text)
+              .font(.fancy.b1Medium)
+              .foregroundColor(.fancy.constant.ghost)
+              .lineLimit(1)
+              .truncationMode(.tail)
+              .allowsHitTesting(false)
+              .multilineTextAlignment(.center)
           }
-        )
+            .roundedEdge(backgroundColor: .fancy.constant.navy)
+        ),
+        style: .animationZoomOut,
+        isSelectable: isEnabled,
+        touchesEnded: {
+          action()
+        }
       )
     )
   }
@@ -79,17 +86,12 @@ struct RoundButtonView_Previews: PreviewProvider {
       
       HStack {
         RoundButtonView(
-          .init(
-            style: .copy(text: "Copy"),
-            action: {}
-          )
+          style: .copy(text: "Copy"),
+          action: {}
         )
-        
         RoundButtonView(
-          .init(
-            style: .custom(image: nil, text: "Max"),
-            action: {}
-          )
+          style: .custom(imageData: nil, text: "Max"),
+          action: {}
         )
       }
     }

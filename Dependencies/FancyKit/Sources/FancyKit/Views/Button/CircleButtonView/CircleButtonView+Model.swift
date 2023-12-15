@@ -7,44 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Model
-
-extension CircleButtonView {
-  public struct Model {
-    public var isEnabled: Bool
-    public let text: String?
-    public let type: CircleButtonView.ButtonType
-    public let size: CircleButtonView.ButtonSize
-    public let style: CircleButtonView.Style
-    public let action: () -> Void
-    
-    // MARK: - Initialization
-    
-    /// Инициализатор для создания модели
-    /// - Parameters:
-    ///   - isEnabled: Кнопка включена
-    ///   - text: Текст, который будет отображаться под кнопкой
-    ///   - type: Тип кнопки
-    ///   - size: Размер кнопки
-    ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
-    public init(
-      isEnabled: Bool = true,
-      text: String? = nil,
-      type: CircleButtonView.ButtonType,
-      size: CircleButtonView.ButtonSize = .large,
-      style: CircleButtonView.Style = .standart,
-      action: @escaping () -> Void
-    ) {
-      self.isEnabled = isEnabled
-      self.text = text
-      self.type = type
-      self.size = size
-      self.style = style
-      self.action = action
-    }
-  }
-}
-
 // MARK: - ButtonSize
 
 extension CircleButtonView {

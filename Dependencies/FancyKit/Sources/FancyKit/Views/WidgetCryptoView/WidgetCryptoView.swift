@@ -47,16 +47,14 @@ private extension WidgetCryptoView {
     AnyView(
       ZStack {
         TapGestureView(
-          .init(
-            content: AnyView(
-              Color.fancy.constant.navy
-            ),
-            style: .flash,
-            isSelectable: model.isSelectable,
-            touchesEnded: {
-              model.action()
-            }
-          )
+          content: AnyView(
+            Color.fancy.constant.navy
+          ),
+          style: .flash,
+          isSelectable: model.isSelectable,
+          touchesEnded: {
+            model.action()
+          }
         )
         
         VStack(spacing: .zero) {

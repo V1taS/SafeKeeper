@@ -12,15 +12,37 @@ public struct CircleButtonView: View {
   
   // MARK: - Private properties
   
-  private let model: CircleButtonView.Model
+  @Binding private var isEnabled: Bool
+  
+  private let text: String?
+  private let type: CircleButtonView.ButtonType
+  private let size: CircleButtonView.ButtonSize
+  private let style: CircleButtonView.Style
+  private let action: () -> Void
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания круглой кнопки
+  /// Инициализатор для создания модели
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: CircleButtonView.Model) {
-    self.model = model
+  ///   - isEnabled: Кнопка включена
+  ///   - text: Текст, который будет отображаться под кнопкой
+  ///   - type: Тип кнопки
+  ///   - size: Размер кнопки
+  ///   - action: Замыкание, которое будет выполняться при нажатии на кнопку
+  public init(
+    isEnabled: Binding<Bool> = .constant(true),
+    text: String? = nil,
+    type: CircleButtonView.ButtonType,
+    size: CircleButtonView.ButtonSize = .large,
+    style: CircleButtonView.Style = .standart,
+    action: @escaping () -> Void
+  ) {
+    self._isEnabled = isEnabled
+    self.text = text
+    self.type = type
+    self.size = size
+    self.style = style
+    self.action = action
   }
   
   // MARK: - Body
@@ -29,7 +51,7 @@ public struct CircleButtonView: View {
     VStack {
       createCircleButtonView()
       
-      if let text = model.text {
+      if let text = text {
         Text(text)
           .font(.fancy.b1)
           .foregroundColor(.fancy.constant.slate)
@@ -49,27 +71,25 @@ private extension CircleButtonView {
   func createCircleButtonView() -> AnyView {
     AnyView(
       TapGestureView(
-        .init(
-          content: AnyView(
-            ZStack {
-              model.style.buttonColor
-              
-              Image(systemName: model.type.imageSystemName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundColor(.fancy.constant.ghost)
-                .frame(height: model.size.buttonSize / 2.6)
-                .allowsHitTesting(false)
-            }
-              .frame(width: model.size.buttonSize, height: model.size.buttonSize)
-              .clipShape(Circle())
-          ),
-          style: .animationZoomOut,
-          isSelectable: model.isEnabled,
-          touchesEnded: {
-            model.action()
+        content: AnyView(
+          ZStack {
+            style.buttonColor
+            
+            Image(systemName: type.imageSystemName)
+              .resizable()
+              .aspectRatio(contentMode: .fit)
+              .foregroundColor(.fancy.constant.ghost)
+              .frame(height: size.buttonSize / 2.6)
+              .allowsHitTesting(false)
           }
-        )
+            .frame(width: size.buttonSize, height: size.buttonSize)
+            .clipShape(Circle())
+        ),
+        style: .animationZoomOut,
+        isSelectable: isEnabled,
+        touchesEnded: {
+          action()
+        }
       )
     )
   }
@@ -94,21 +114,16 @@ struct CircleButtonView_Previews: PreviewProvider {
         HStack {
           Spacer()
           CircleButtonView(
-            .init(
-              text: "Send",
-              type: .custom(systemNameImage: "arrow.up.arrow.down"),
-              size: .large,
-              action: {}
-            )
+            text: "Send",
+            type: .custom(systemNameImage: "arrow.up.arrow.down"),
+            size: .large,
+            action: {}
           )
-          
           CircleButtonView(
-            .init(
-              text: "Receive",
-              type: .receive,
-              size: .small,
-              action: {}
-            )
+            text: "Receive",
+            type: .receive,
+            size: .small,
+            action: {}
           )
           Spacer()
         }

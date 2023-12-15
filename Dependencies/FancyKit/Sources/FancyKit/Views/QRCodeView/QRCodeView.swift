@@ -18,16 +18,20 @@ public struct QRCodeView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания QR
+  /// Инициализатор для создания модельки
   /// - Parameters:
-  ///   - model: Модель данных
-  public init(_ model: QRCodeView.Model) {
-    self.dataString = model.dataString
+  ///   - iconData: Иконка в центре QR
+  ///   - dataString: Данные для генерации QR
+  ///   - getImageViewData: Изображение всего вью
+  public init(iconData: Data?,
+              dataString: String,
+              getImageViewData: ((Data?) -> Void)? = nil) {
+    self.dataString = dataString
     self.qrCodeImage = QRCodeView.generateQRCode(
-      from: model.dataString,
-      icon: model.iconData
+      from: dataString,
+      icon: iconData
     )
-    model.getImageViewData?(self.asUIImage().pngData())
+    getImageViewData?(self.asUIImage().pngData())
   }
   
   // MARK: - Body
@@ -66,10 +70,8 @@ struct QRCodeView_Previews: PreviewProvider {
     VStack {
       Spacer()
       QRCodeView(
-        .init(
-          iconData: UIImage(systemName: "link.circle")?.pngData(),
-          dataString: "tet"
-        )
+        iconData: UIImage(systemName: "link.circle")?.pngData(),
+        dataString: "tet"
       )
       Spacer()
     }
