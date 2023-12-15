@@ -89,7 +89,8 @@ struct RootView: View {
           
           Group {
             InputView(
-              text: $inputViewOne,
+              text: $inputViewOne, 
+              bottomHelper: .constant("Helper text"),
               isError: .constant(false),
               isEnabled: .constant(true),
               isTextFieldFocused: .constant(nil),
@@ -104,6 +105,7 @@ struct RootView: View {
             
             InputView(
               text: $inputViewTwo,
+              bottomHelper: .constant(nil),
               isError: .constant(false),
               isEnabled: .constant(true),
               isTextFieldFocused: .constant(nil),
@@ -117,7 +119,8 @@ struct RootView: View {
             )
             
             InputView(
-              text: $inputViewThree,
+              text: $inputViewThree, 
+              bottomHelper: .constant("Helper text"),
               isError: .constant(true),
               isEnabled: .constant(true),
               isTextFieldFocused: .constant(nil),

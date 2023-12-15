@@ -15,8 +15,7 @@ extension InputView {
     var isTopHelper: Bool {
       switch self {
       case .topHelper: return true
-      case .leftHelper: return false
-      case .none: return false
+      default: return false
       }
     }
     

@@ -13,6 +13,7 @@ public struct InputView: View {
   // MARK: - Private properties
   
   @Binding private var text: String
+  @Binding private var bottomHelper: String?
   @Binding private var isError: Bool
   @Binding private var isEnabled: Bool
   @FocusState private var isTextFieldFocused: Bool
@@ -24,13 +25,17 @@ public struct InputView: View {
   private let keyboardType: UIKeyboardType
   private let maxLength: Int
   private let textFont: Font?
+  private let bottomHelperFont: Font?
   private let backgroundColor: Color?
+  private let rightContentView: AnyView?
+  
   
   // MARK: - Initialization
   
   /// Инициализатор для создания текстового поля
   /// - Parameters:
   ///   - text: Текст, который будет помещен в текстовое поле
+  ///   - bottomHelper: Текст подсказка снизу
   ///   - isError: Ошибка в поле
   ///   - isEnabled: Текстовое поле включено
   ///   - isTextFieldFocused: Фокус на текстовое поле
@@ -40,8 +45,10 @@ public struct InputView: View {
   ///   - keyboardType: Стиль клавиатуры
   ///   - maxLength: Максимальная длина символов
   ///   - textFont: Шрифт для текстового поля
+  ///   - bottomHelperFont: Шрифт для нижнего хелпера
   ///   - backgroundColor: Цвет фона
   public init(text: Binding<String>,
+              bottomHelper: Binding<String?>,
               isError: Binding<Bool> = .constant(false),
               isEnabled: Binding<Bool> = .constant(true),
               isTextFieldFocused: Binding<Bool?> = .constant(nil),
@@ -51,8 +58,11 @@ public struct InputView: View {
               keyboardType: UIKeyboardType = .default,
               maxLength: Int = 100,
               textFont: Font? = nil,
-              backgroundColor: Color? = nil) {
+              bottomHelperFont: Font? = nil,
+              backgroundColor: Color? = nil,
+              rightContentView: AnyView? = nil) {
     self._text = text
+    self._bottomHelper = bottomHelper
     self._isError = isError
     self._isEnabled = isEnabled
     self._isTextFieldFocusedBinding = isTextFieldFocused
@@ -62,111 +72,17 @@ public struct InputView: View {
     self.keyboardType = keyboardType
     self.maxLength = maxLength
     self.textFont = textFont
+    self.bottomHelperFont = bottomHelperFont
     self.backgroundColor = backgroundColor
+    self.rightContentView = rightContentView
   }
   
   // MARK: - Body
   
   public var body: some View {
-    ZStack {
-      VStack {
-        Spacer()
-        TapGestureView(
-          content: AnyView(
-            backgroundColor ?? Color.fancy.constant.navy
-          ),
-          style: .none,
-          isImpactFeedback: false,
-          touchesBegan: {},
-          touchesEnded: {
-            isTextFieldFocused = true
-          }
-        )
-        Spacer()
-      }
-      
-      VStack {
-        HStack(spacing: .zero) {
-          if case let .leftHelper(text) = style {
-            Text("\(text)")
-              .font(.fancy.h3)
-              .foregroundColor(.fancy.constant.slate)
-              .lineLimit(Constants.lineLimit)
-              .truncationMode(.tail)
-              .padding(.trailing, .s2)
-              .allowsHitTesting(false)
-          }
-          
-          VStack(alignment: .leading, spacing: .zero) {
-            if case let .topHelper(text) = style {
-              Text("\(text)")
-                .font(.fancy.b2Medium)
-                .foregroundColor(.fancy.constant.slate)
-                .lineLimit(Constants.lineLimit)
-                .truncationMode(.tail)
-                .padding(.top, .s4)
-                .allowsHitTesting(false)
-            }
-            
-            TextField("", text: $text, axis: .vertical)
-              .onChange(of: text) { newValue in
-                if newValue.count > maxLength {
-                  text = String(newValue.prefix(maxLength))
-                }
-              }
-              .autocorrectionDisabled(true)
-              .keyboardType(keyboardType)
-              .disabled(!isEnabled)
-              .padding(.vertical, .s1)
-              .focused($isTextFieldFocused)
-              .lineLimit(Constants.lineLimit)
-              .font(textFont ?? .fancy.b1)
-              .foregroundColor(.fancy.constant.ghost)
-              .accentColor(isError ? .fancy.constant.ruby : .fancy.constant.azure)
-              .truncationMode(.tail)
-              .padding(.bottom, .s4)
-              .padding(.top, style.isTopHelper ? .zero : .s4)
-              .placeholder(when: text.isEmpty) {
-                Text(placeholder)
-                  .padding(.vertical, .s1)
-                  .foregroundColor(.fancy.constant.slate).opacity(0.3)
-                  .font(textFont ?? .fancy.b1)
-                  .padding(.bottom, .s4)
-                  .padding(.top, style.isTopHelper ? .zero : .s4)
-              }
-              .allowsHitTesting(false)
-          }
-          
-          if (!text.isEmpty && isTextFieldFocused) {
-            Button(action: {
-              text = ""
-            }) {
-              Image(systemName: "xmark.circle.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: .s5)
-                .foregroundColor(.fancy.constant.slate)
-                .padding(.leading, .s3)
-            }
-          }
-        }
-      }
-    }
-    .frame(width: .infinity)
-    .padding(.horizontal, .s4)
-    .background(backgroundColor ?? Color.fancy.constant.navy)
-    .overlay(
-      RoundedRectangle(cornerRadius: .s5)
-        .stroke(
-          getColorFocusBorder(),
-          lineWidth: .s1 / 1.5
-        )
-    )
-    .clipShape(RoundedRectangle(cornerRadius: .s5))
-    .onChange(of: isTextFieldFocusedBinding) { newValue in
-      if let newValue {
-        isTextFieldFocused = newValue
-      }
+    VStack(spacing: .zero) {
+      createInputView()
+      createBottomHelperView()
     }
   }
 }
@@ -174,6 +90,148 @@ public struct InputView: View {
 // MARK: - Private
 
 private extension InputView {
+  func createInputView() -> AnyView {
+    AnyView(
+      ZStack {
+        VStack {
+          Spacer()
+          TapGestureView(
+            content: AnyView(
+              backgroundColor ?? Color.fancy.constant.navy
+            ),
+            style: .none,
+            isImpactFeedback: false,
+            touchesBegan: {},
+            touchesEnded: {
+              isTextFieldFocused = true
+            }
+          )
+          Spacer()
+        }
+        
+        VStack {
+          HStack(spacing: .zero) {
+            // MARK: - leftHelper
+            if case let .leftHelper(text) = style {
+              Text("\(text)")
+                .font(.fancy.h3)
+                .foregroundColor(.fancy.constant.slate)
+                .lineLimit(Constants.lineLimit)
+                .truncationMode(.tail)
+                .padding(.trailing, .s2)
+                .allowsHitTesting(false)
+            }
+            
+            VStack(alignment: .leading, spacing: .zero) {
+              // MARK: - topHelper
+              if case let .topHelper(text) = style {
+                Text("\(text)")
+                  .font(.fancy.b2Medium)
+                  .foregroundColor(.fancy.constant.slate)
+                  .lineLimit(Constants.lineLimit)
+                  .truncationMode(.tail)
+                  .padding(.top, .s4)
+                  .allowsHitTesting(false)
+              }
+              
+              createTextField()
+            }
+            
+            if (!text.isEmpty && isTextFieldFocused) {
+              Button(action: {
+                text = ""
+              }) {
+                Image(systemName: "xmark.circle.fill")
+                  .resizable()
+                  .aspectRatio(contentMode: .fit)
+                  .frame(height: .s5)
+                  .foregroundColor(.fancy.constant.slate)
+                  .padding(.leading, .s3)
+              }
+            }
+            
+            if let rightContentView {
+              rightContentView
+                .frame(height: .s5)
+                .padding(.leading, .s3)
+            }
+          }
+        }
+      }
+        .frame(width: .infinity)
+        .padding(.horizontal, .s4)
+        .background(backgroundColor ?? Color.fancy.constant.navy)
+        .overlay(
+          RoundedRectangle(cornerRadius: .s5)
+            .stroke(
+              getColorFocusBorder(),
+              lineWidth: .s1 / 1.5
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: .s5))
+        .onChange(of: isTextFieldFocusedBinding) { newValue in
+          if let newValue {
+            isTextFieldFocused = newValue
+          }
+        }
+    )
+  }
+  
+  func createTextField() -> AnyView {
+    AnyView(
+      TextField("", text: $text, axis: .vertical)
+        .onChange(of: text) { newValue in
+          if newValue.count > maxLength {
+            text = String(newValue.prefix(maxLength))
+          }
+        }
+        .autocorrectionDisabled(true)
+        .keyboardType(keyboardType)
+        .disabled(!isEnabled)
+        .padding(.vertical, .s1)
+        .focused($isTextFieldFocused)
+        .lineLimit(Constants.lineLimit)
+        .font(textFont ?? .fancy.b1)
+        .foregroundColor(.fancy.constant.ghost)
+        .accentColor(isError ? .fancy.constant.ruby : .fancy.constant.azure)
+        .truncationMode(.tail)
+        .padding(.bottom, .s4)
+        .padding(.top, style.isTopHelper ? .zero : .s4)
+        .placeholder(when: text.isEmpty) {
+          Text(placeholder)
+            .padding(.vertical, .s1)
+            .foregroundColor(.fancy.constant.slate).opacity(0.3)
+            .font(textFont ?? .fancy.b1)
+            .padding(.bottom, .s4)
+            .padding(.top, style.isTopHelper ? .zero : .s4)
+        }
+        .allowsHitTesting(false)
+    )
+  }
+  
+  func createBottomHelperView() -> AnyView {
+    guard let bottomHelper else {
+      return AnyView(EmptyView())
+    }
+    
+    return AnyView(
+      HStack {
+        Text("\(bottomHelper)")
+          .font(bottomHelperFont ?? .fancy.b3)
+          .foregroundColor(
+            isError ? .fancy.constant.ruby : .fancy.constant.slate
+          )
+          .lineLimit(Constants.lineLimit)
+          .truncationMode(.tail)
+          .padding(.trailing, .s2)
+          .allowsHitTesting(false)
+        Spacer()
+      }
+        .padding(.top, .s1)
+        .padding(.horizontal, .s4)
+    )
+  }
+  
   func getColorFocusBorder() -> Color {
     guard isColorFocusBorder else {
       return .clear
@@ -212,6 +270,7 @@ struct InputView_Previews: PreviewProvider {
       Spacer()
       InputView(
         text: .constant("Hello world"),
+        bottomHelper: .constant("Helper text"),
         isError: .constant(false),
         isEnabled: .constant(true),
         isTextFieldFocused: .constant(nil),
@@ -220,7 +279,6 @@ struct InputView_Previews: PreviewProvider {
         style: .none,
         keyboardType: .default,
         maxLength: 10,
-        textFont: nil,
         backgroundColor: nil
       )
       Spacer()
