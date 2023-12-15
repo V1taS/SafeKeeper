@@ -19,7 +19,7 @@ public struct InputContentSizeView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания текстового поля
+  /// Инициализатор
   /// - Parameters:
   ///   - text: Текст, который будет помещен в текстовое поле
   ///   - keyboardType: Стиль клавиатуры

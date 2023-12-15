@@ -18,7 +18,7 @@ public struct QRCodeView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания модельки
+  /// Инициализатор
   /// - Parameters:
   ///   - iconData: Иконка в центре QR
   ///   - dataString: Данные для генерации QR

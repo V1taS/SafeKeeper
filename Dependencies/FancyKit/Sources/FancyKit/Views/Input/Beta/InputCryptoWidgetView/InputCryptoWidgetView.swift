@@ -24,7 +24,7 @@ public struct InputCryptoWidgetView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания модельки для виджета
+  /// Инициализатор
   /// - Parameters:
   ///   - currencyValue: Значение валюты
   ///   - currencyName: Имя валюты

@@ -22,7 +22,7 @@ public struct CircleButtonView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания модели
+  /// Инициализатор
   /// - Parameters:
   ///   - isEnabled: Кнопка включена
   ///   - text: Текст, который будет отображаться под кнопкой

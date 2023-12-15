@@ -19,7 +19,7 @@ public struct TitleAndSubtitleView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания модельки
+  /// Инициализатор
   /// - Parameters:
   ///   - title: Заголовок
   ///   - description: Описание

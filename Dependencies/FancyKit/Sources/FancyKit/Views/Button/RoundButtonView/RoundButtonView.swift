@@ -19,7 +19,7 @@ public struct RoundButtonView: View {
   
   // MARK: - Initialization
   
-  /// Инициализатор для создания овальной кнопки
+  /// Инициализатор
   /// - Parameters:
   ///   - isEnabled: Кнопка включена
   ///   - style: Стиль кнопки
