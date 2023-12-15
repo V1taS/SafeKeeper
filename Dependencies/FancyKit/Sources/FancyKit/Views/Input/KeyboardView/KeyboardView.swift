@@ -55,6 +55,7 @@ private extension KeyboardView {
             .clipShape(Circle())
         ),
         style: .flash,
+        isSelectable: title != "",
         touchesEnded: action
       )
     )
