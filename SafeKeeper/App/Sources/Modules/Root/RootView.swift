@@ -21,6 +21,7 @@ struct RootView: View {
   @State private var inputContentSize = "12"
   
   @State private var currency = "112"
+  @State private var pin = ""
   
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -31,23 +32,30 @@ struct RootView: View {
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
           
-          PasscodeFieldView(
-            maxDigits: 4,
-            title: "Enter One Time Password",
-            isTextFieldFocused: .constant(true)) { pin, closure in
-              var helperText = ""
-              var isSuccess = false
-              if pin == "1234" {
-                isSuccess = true
-                helperText = "Код верный 🤑"
-              } else {
-                isSuccess = false
-                helperText = "Код не верный, попробуй 1234"
+          VStack {
+            PasscodeFieldView(
+              title: .constant("Set password"),
+              pin: $pin,
+              maxDigits: 4) { pin, closure in
+                var helperText = ""
+                var isSuccess = false
+                if pin == "1234" {
+                  isSuccess = true
+                  helperText = "Код верный 🤑"
+                } else {
+                  isSuccess = false
+                  helperText = "Код не верный, попробуй 1234"
+                }
+                closure(isSuccess, helperText, {})
               }
-              closure(isSuccess, helperText, {
-                // Завершение
-              })
-            }
+              .padding(.top, .s26)
+            
+            Spacer()
+            
+            KeyboardView(value: $pin)
+              .padding(.bottom, .s20)
+          }
+          .frame(height: UIScreen.main.bounds.height - .s20)
           
           HStack {
             RoundButtonView(
@@ -108,7 +116,7 @@ struct RootView: View {
           
           Group {
             InputView(
-              text: $inputViewOne, 
+              text: $inputViewOne,
               bottomHelper: .constant("Helper text"),
               isError: .constant(false),
               isEnabled: .constant(true),
@@ -139,7 +147,7 @@ struct RootView: View {
             )
             
             InputView(
-              text: $inputViewThree, 
+              text: $inputViewThree,
               bottomHelper: .constant("Helper text"),
               isError: .constant(true),
               isEnabled: .constant(true),

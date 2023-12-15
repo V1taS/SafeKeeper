@@ -28,15 +28,13 @@ public struct PasscodeFieldView: View {
   
   // MARK: - Private properties
   
-  @State private var pin: String = ""
+  @Binding private var title: String
+  @Binding private var pin: String
   @State private var helperText: String?
   @State private var isDisabled = false
   @State private var passcodeState: PasscodeFieldView.PasscodeState = .standart
-  @FocusState private var isTextFieldFocused: Bool
-  @Binding private var isTextFieldFocusedBinding: Bool?
   
   private let maxDigits: Int
-  private let title: String
   private let handler: PasscodeHandler
   private var indices: [Int] { Array(.zero..<maxDigits) }
   
@@ -44,26 +42,26 @@ public struct PasscodeFieldView: View {
   
   /// Инициализатор
   /// - Parameters:
-  ///   - maxDigits: Максимальное количество символов
   ///   - title: Заголовок
-  ///   - isTextFieldFocused: Фокус на текстовое поле
+  ///   - pin: Пин код
+  ///   - maxDigits: Максимальное количество символов
   ///   - handler: Обработчик
   public init(
+    title: Binding<String>,
+    pin: Binding<String>,
     maxDigits: Int = 4,
-    title: String,
-    isTextFieldFocused: Binding<Bool?> = .constant(nil),
     handler: @escaping PasscodeHandler
   ) {
+    self._title = title
+    self._pin = pin
     self.maxDigits = maxDigits
-    self.title = title
-    self._isTextFieldFocusedBinding = isTextFieldFocused
     self.handler = handler
   }
   
   // MARK: - Body
   
   public var body: some View {
-    VStack(spacing: .s4) {
+    VStack(spacing: .s5) {
       Text(title)
         .font(.fancy.h1)
         .lineLimit(Constants.lineLimit)
@@ -72,7 +70,6 @@ public struct PasscodeFieldView: View {
       
       ZStack {
         createPinDots()
-        createBackgroundField()
       }
       
       if let helperText {
@@ -83,10 +80,8 @@ public struct PasscodeFieldView: View {
           .allowsHitTesting(false)
       }
     }
-    .onChange(of: isTextFieldFocusedBinding) { newValue in
-      if let newValue {
-        isTextFieldFocused = newValue
-      }
+    .onChange(of: pin) { _ in
+      submitPin()
     }
   }
 }
@@ -111,29 +106,8 @@ private extension PasscodeFieldView {
     )
   }
   
-  func createBackgroundField() -> AnyView {
-    let boundPin = Binding<String>(
-      get: {
-        self.pin
-      },
-      set: {
-        newValue in
-        self.pin = newValue
-        self.submitPin()
-      }
-    )
-    return AnyView(
-      TextField("", text: boundPin, onCommit: submitPin)
-        .focused($isTextFieldFocused)
-        .accentColor(.clear)
-        .foregroundColor(.clear)
-        .keyboardType(.numberPad)
-        .disabled(isDisabled)
-    )
-  }
-  
   func finishSetPin(_ completion: (() -> Void)?) {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
       completion?()
       pin = ""
       isDisabled = false
@@ -191,8 +165,9 @@ private enum Constants {
 struct PasscodeView_Previews: PreviewProvider {
   static var previews: some View {
     PasscodeFieldView(
-      maxDigits: 4,
-      title: "Pass Code"
+      title: .constant("Pass Code"),
+      pin: .constant("2"),
+      maxDigits: 4
     ) { pin, isSuccess in
       isSuccess(true, "Helper text", {})
     }
