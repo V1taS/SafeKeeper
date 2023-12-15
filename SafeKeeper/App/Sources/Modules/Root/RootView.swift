@@ -30,6 +30,25 @@ struct RootView: View {
       
       ScrollView(.vertical, showsIndicators: false) {
         VStack(spacing: 16) {
+          
+          PasscodeFieldView(
+            maxDigits: 4,
+            title: "Enter One Time Password",
+            isTextFieldFocused: .constant(true)) { pin, closure in
+              var helperText = ""
+              var isSuccess = false
+              if pin == "1234" {
+                isSuccess = true
+                helperText = "Код верный 🤑"
+              } else {
+                isSuccess = false
+                helperText = "Код не верный, попробуй 1234"
+              }
+              closure(isSuccess, helperText, {
+                // Завершение
+              })
+            }
+          
           HStack {
             RoundButtonView(
               style: .copy(text: "Copy"),
