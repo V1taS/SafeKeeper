@@ -105,6 +105,7 @@ struct RootView: View {
             
             InputView(
               text: $inputViewTwo,
+              isSecureField: .constant(true),
               bottomHelper: .constant(nil),
               isError: .constant(false),
               isEnabled: .constant(true),

@@ -13,6 +13,7 @@ public struct InputView: View {
   // MARK: - Private properties
   
   @Binding private var text: String
+  @Binding private var isSecureField: Bool
   @Binding private var bottomHelper: String?
   @Binding private var isError: Bool
   @Binding private var isEnabled: Bool
@@ -35,6 +36,7 @@ public struct InputView: View {
   /// Инициализатор для создания текстового поля
   /// - Parameters:
   ///   - text: Текст, который будет помещен в текстовое поле
+  ///   - isSecureField: Защищенный режим включен
   ///   - bottomHelper: Текст подсказка снизу
   ///   - isError: Ошибка в поле
   ///   - isEnabled: Текстовое поле включено
@@ -48,6 +50,7 @@ public struct InputView: View {
   ///   - bottomHelperFont: Шрифт для нижнего хелпера
   ///   - backgroundColor: Цвет фона
   public init(text: Binding<String>,
+              isSecureField: Binding<Bool> = .constant(false),
               bottomHelper: Binding<String?>,
               isError: Binding<Bool> = .constant(false),
               isEnabled: Binding<Bool> = .constant(true),
@@ -62,6 +65,7 @@ public struct InputView: View {
               backgroundColor: Color? = nil,
               rightContentView: AnyView? = nil) {
     self._text = text
+    self._isSecureField = isSecureField
     self._bottomHelper = bottomHelper
     self._isError = isError
     self._isEnabled = isEnabled
@@ -179,7 +183,7 @@ private extension InputView {
   
   func createTextField() -> AnyView {
     AnyView(
-      TextField("", text: $text, axis: .vertical)
+      getTextField()
         .onChange(of: text) { newValue in
           if newValue.count > maxLength {
             text = String(newValue.prefix(maxLength))
@@ -207,6 +211,18 @@ private extension InputView {
         }
         .allowsHitTesting(false)
     )
+  }
+  
+  func getTextField() -> AnyView {
+    if isSecureField {
+      return AnyView(
+        SecureField("", text: $text)
+      )
+    } else {
+      return AnyView(
+        TextField("", text: $text, axis: .vertical)
+      )
+    }
   }
   
   func createBottomHelperView() -> AnyView {
