@@ -15,13 +15,17 @@ extension CircleButtonView {
       switch self {
       case .large:
         return .s14
-      case .small:
+      case .standart:
         return .s11
+      case .small:
+        return .s9
       }
     }
     
     /// Большая кнопка
     case large
+    /// Стандартная кнопка
+    case standart
     /// Маленькая кнопка
     case small
   }

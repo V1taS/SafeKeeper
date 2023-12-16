@@ -29,74 +29,83 @@ struct MainScreenView: View {
   
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { viewStore in
-      VStack(spacing: .zero) {
-        ScrollView(.vertical, showsIndicators: false) {
-          VStack(spacing: .zero) {
-            TitleAndSubtitleView(
-              .title(
-                text: "$ 0",
-                lineLimit: 1,
-                isSelectable: true,
-                isSecure: false,
-                action: {}
-              ),
-              .description(
-                text: nil,
-                lineLimit: 1,
-                isSelectable: true,
-                isSecure: false,
-                action: {}),
-              alignment: .center,
-              style: .large
-            )
-            .padding(.top, .s10)
-            
-            HStack {
-              Spacer()
-              CircleButtonView(
-                text: "Send",
-                type: .send,
-                size: .small,
-                action: {}
-              )
-              CircleButtonView(
-                text: "Receive",
-                type: .receive,
-                size: .small,
-                action: {}
-              )
-              Spacer()
+      NavigationCustomView(navigationTitle: "Wallet") {
+        VStack(spacing: .zero) {
+          ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: .zero) {
+              createTitleAndSubtitleView()
+                .padding(.top, .s10)
+              
+              createButtonPanelView()
+                .padding(.top, .s5)
             }
-            .padding(.top, .s5)
+            .padding(.horizontal, .s4)
           }
-          .padding(.horizontal, .s4)
+          
+          createSetupWalletButtonView()
+            .padding(.horizontal, .s4)
+            .padding(.bottom, .s4)
         }
-        
-        MainButtonView(
-          text: .constant("Set up wallet"),
-          isEnabled: .constant(true),
-          style: .primary,
+      }
+    }
+  }
+}
+
+// MARK: - Private
+
+private extension MainScreenView {
+  func createTitleAndSubtitleView() -> AnyView {
+    AnyView(
+      TitleAndSubtitleView(
+        .title(
+          text: "$ 0",
+          lineLimit: 1,
+          isSelectable: true,
+          isSecure: false,
+          action: {}
+        ),
+        .description(
+          text: nil,
+          lineLimit: 1,
+          isSelectable: true,
+          isSecure: false,
+          action: {}),
+        alignment: .center,
+        style: .large
+      )
+    )
+  }
+  
+  func createButtonPanelView() -> AnyView {
+    AnyView(
+      HStack {
+        Spacer()
+        CircleButtonView(
+          text: "Send",
+          type: .send,
+          size: .small,
           action: {}
         )
-        .padding(.horizontal, .s4)
-        .padding(.bottom, .s4)
+        CircleButtonView(
+          text: "Receive",
+          type: .receive,
+          size: .small,
+          action: {}
+        )
+        Spacer()
       }
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.fancy.constant.onyx.edgesIgnoringSafeArea(.all))
-    .navigationBarTitleDisplayMode(.inline)
-    .toolbarBackground(Color.fancy.constant.onyx, for: .navigationBar)
-    .toolbarBackground(.visible)
-    .toolbar {
-      ToolbarItem(placement: .principal) {
-        VStack {
-          Text("Wallet")
-            .font(.fancy.h3)
-            .fontWeight(.bold)
-            .foregroundColor(.fancy.constant.ghost)
-        }
-      }
-    }
+    )
+  }
+  
+  func createSetupWalletButtonView() -> AnyView {
+    AnyView(
+      MainButtonView(
+        text: .constant("Set up wallet"),
+        isEnabled: .constant(true),
+        style: .primary,
+        action: {}
+      )
+    )
   }
 }
 

@@ -33,7 +33,7 @@ public struct CircleButtonView: View {
     isEnabled: Binding<Bool> = .constant(true),
     text: String? = nil,
     type: CircleButtonView.ButtonType,
-    size: CircleButtonView.ButtonSize = .large,
+    size: CircleButtonView.ButtonSize = .standart,
     style: CircleButtonView.Style = .standart,
     action: @escaping () -> Void
   ) {
