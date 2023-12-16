@@ -13,11 +13,13 @@ import ComposableArchitecture
 struct AppMain: App {
   var body: some Scene {
     WindowGroup {
-      RootView(
-        store: Store(initialState: RootFeature.State()) {
-          RootFeature()
-        }
-      )
+      NavigationStack {
+        MainScreenView(
+          store: Store(initialState: MainScreenFeature.State()) {
+            MainScreenFeature()
+          }
+        )
+      }
     }
   }
 }
