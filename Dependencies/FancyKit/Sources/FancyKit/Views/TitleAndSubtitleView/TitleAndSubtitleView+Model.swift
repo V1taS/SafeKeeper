@@ -46,7 +46,7 @@ extension TitleAndSubtitleView {
 extension TitleAndSubtitleView {
   public enum Description {
     case description(
-      text: String,
+      text: String?,
       lineLimit: Int,
       isSelectable: Bool,
       isSecure: Bool,

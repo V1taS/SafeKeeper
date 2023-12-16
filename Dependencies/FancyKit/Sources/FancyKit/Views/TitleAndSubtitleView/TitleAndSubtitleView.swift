@@ -60,7 +60,8 @@ public struct TitleAndSubtitleView: View {
       }
       
       // Описание
-      if case let .description(text, lineLimit, isSelectable, isSecure, action) = description {
+      if case let .description(text, lineLimit, isSelectable, isSecure, action) = description,
+         let text {
         TapGestureView(
           content: AnyView(
             Text(isSecure ? Constants.secureText : text)
