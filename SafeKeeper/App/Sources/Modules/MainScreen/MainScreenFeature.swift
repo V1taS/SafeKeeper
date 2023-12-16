@@ -12,16 +12,11 @@ struct MainScreenFeature: Reducer {
   
   // MARK: - State
   
-  struct State: Equatable {
-    
-    
-  }
+  struct State: Equatable {}
   
   // MARK: - Action
   
-  enum Action {
-    
-  }
+  enum Action {}
   
   // MARK: - Dependency
   
