@@ -89,6 +89,11 @@ public struct PasscodeFieldView: View {
 // MARK: - Private
 
 private extension PasscodeFieldView {
+  func triggerHapticFeedback(_ type: UINotificationFeedbackGenerator.FeedbackType) {
+    let generator = UINotificationFeedbackGenerator()
+    generator.notificationOccurred(type)
+  }
+  
   func createPinDots() -> AnyView {
     AnyView(
       HStack(spacing: .zero) {
@@ -129,10 +134,12 @@ private extension PasscodeFieldView {
           self.helperText = helperText
           passcodeState = .success
           finishSetPin(completion)
+          triggerHapticFeedback(.success)
         } else {
           self.helperText = helperText
           passcodeState = .failure
           finishSetPin(completion)
+          triggerHapticFeedback(.error)
         }
       }
       return

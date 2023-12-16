@@ -22,6 +22,7 @@ struct RootView: View {
   
   @State private var currency = "112"
   @State private var pin = ""
+  @State private var pinIsEnabled = true
   
   var body: some View {
     WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -46,13 +47,19 @@ struct RootView: View {
                   isSuccess = false
                   helperText = "Код не верный, попробуй 1234"
                 }
-                closure(isSuccess, helperText, {})
+                
+                if pin.count == 4 {
+                  pinIsEnabled = false
+                }
+                closure(isSuccess, helperText, {
+                  pinIsEnabled = true
+                })
               }
               .padding(.top, .s26)
             
             Spacer()
             
-            KeyboardView(value: $pin)
+            KeyboardView(value: $pin, isEnabled: $pinIsEnabled)
               .padding(.bottom, .s20)
           }
           .frame(height: UIScreen.main.bounds.height - .s20)

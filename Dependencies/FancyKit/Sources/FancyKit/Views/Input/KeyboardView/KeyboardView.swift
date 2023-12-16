@@ -13,6 +13,7 @@ public struct KeyboardView: View {
   // MARK: - Private properties
   
   @Binding private var value: String
+  @Binding private var isEnabled: Bool
   private let buttonSize: CGFloat = .s17
   
   // MARK: - Initialization
@@ -20,8 +21,13 @@ public struct KeyboardView: View {
   /// Инициализатор
   /// - Parameters:
   ///   - value: Значение с клавиатуры
-  public init(value: Binding<String>) {
+  ///   - isEnabled: Клавиатура включена
+  public init(
+    value: Binding<String>,
+    isEnabled: Binding<Bool>
+  ) {
     self._value = value
+    self._isEnabled = isEnabled
   }
   
   // MARK: - Body
@@ -40,7 +46,15 @@ public struct KeyboardView: View {
 
 private extension KeyboardView {
   func createButton(title: String, action: @escaping () -> Void) -> AnyView {
-    AnyView(
+    if title == "" {
+      return AnyView(
+        Color.clear
+          .frame(width: buttonSize, height: buttonSize)
+          .clipShape(Circle())
+      )
+    }
+    
+    return AnyView(
       TapGestureView(
         content: AnyView(
           ZStack {
@@ -55,7 +69,7 @@ private extension KeyboardView {
             .clipShape(Circle())
         ),
         style: .flash,
-        isSelectable: title != "",
+        isSelectable: isEnabled,
         touchesEnded: action
       )
     )
@@ -100,6 +114,7 @@ private extension KeyboardView {
             .frame(width: buttonSize, height: buttonSize)
         ),
         style: .flash,
+        isSelectable: isEnabled,
         touchesEnded: action
       )
     )
@@ -163,7 +178,10 @@ struct KeyboardView_Previews: PreviewProvider {
         Spacer()
         
         HStack {
-          KeyboardView(value: .constant("23"))
+          KeyboardView(
+            value: .constant("23"),
+            isEnabled: .constant(true)
+          )
         }
       }
       .padding(.bottom, .s20)
