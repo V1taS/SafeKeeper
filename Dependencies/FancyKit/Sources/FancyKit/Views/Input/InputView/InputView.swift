@@ -100,16 +100,12 @@ private extension InputView {
         VStack {
           Spacer()
           TapGestureView(
-            content: AnyView(
-              backgroundColor ?? Color.fancy.constant.navy
-            ),
             style: .none,
             isImpactFeedback: false,
-            touchesBegan: {},
-            touchesEnded: {
-              isTextFieldFocused = true
-            }
-          )
+            touchesEnded: { isTextFieldFocused = true }
+          ) {
+            backgroundColor ?? Color.fancy.constant.navy
+          }
           Spacer()
         }
         

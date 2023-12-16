@@ -40,34 +40,31 @@ public struct MainButtonView: View {
   
   public var body: some View {
     TapGestureView(
-      content: AnyView(
-        ZStack {
-          LinearGradient(
-            gradient: Gradient(
-              colors: isEnabled ? style.enabledColors : style.disabledColors
-            ),
-            startPoint: .leading,
-            endPoint: .trailing
-          )
-          
-          Text(text)
-            .font(.fancy.h3)
-            .foregroundColor(.fancy.constant.ghost)
-            .padding(.s4)
-            .frame(maxWidth: .infinity)
-            .lineLimit(Constants.lineLimit)
-            .truncationMode(.tail)
-            .allowsHitTesting(false)
-        }
-          .clipShape(RoundedRectangle(cornerRadius: .s4))
-          .frame(height: .s13)
-      ),
       style: .animationZoomOut,
       isSelectable: isEnabled,
-      touchesEnded: {
-        action()
+      touchesEnded: { action() }
+    ) {
+      ZStack {
+        LinearGradient(
+          gradient: Gradient(
+            colors: isEnabled ? style.enabledColors : style.disabledColors
+          ),
+          startPoint: .leading,
+          endPoint: .trailing
+        )
+        
+        Text(text)
+          .font(.fancy.h3)
+          .foregroundColor(.fancy.constant.ghost)
+          .padding(.s4)
+          .frame(maxWidth: .infinity)
+          .lineLimit(Constants.lineLimit)
+          .truncationMode(.tail)
+          .allowsHitTesting(false)
       }
-    )
+      .clipShape(RoundedRectangle(cornerRadius: .s4))
+      .frame(height: .s13)
+    }
   }
 }
 

@@ -71,26 +71,23 @@ private extension CircleButtonView {
   func createCircleButtonView() -> AnyView {
     AnyView(
       TapGestureView(
-        content: AnyView(
-          ZStack {
-            style.buttonColor
-            
-            Image(systemName: type.imageSystemName)
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .foregroundColor(.fancy.constant.ghost)
-              .frame(height: size.buttonSize / 2.6)
-              .allowsHitTesting(false)
-          }
-            .frame(width: size.buttonSize, height: size.buttonSize)
-            .clipShape(Circle())
-        ),
         style: .animationZoomOut,
         isSelectable: isEnabled,
-        touchesEnded: {
-          action()
+        touchesEnded: { action() }
+      ) {
+        ZStack {
+          style.buttonColor
+          
+          Image(systemName: type.imageSystemName)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .foregroundColor(.fancy.constant.ghost)
+            .frame(height: size.buttonSize / 2.6)
+            .allowsHitTesting(false)
         }
-      )
+        .frame(width: size.buttonSize, height: size.buttonSize)
+        .clipShape(Circle())
+      }
     )
   }
 }

@@ -44,39 +44,33 @@ public struct TitleAndSubtitleView: View {
       // Заголовок
       if case let .title(text, lineLimit, isSelectable, isSecure, action) = title {
         TapGestureView(
-          content: AnyView(
-            getTitleView(
-              with: isSecure,
-              text: text,
-              lineLimit: lineLimit
-            )
-          ),
           style: .animationZoomOut,
           isSelectable: isSelectable,
-          touchesEnded: {
-            action?()
-          }
-        )
+          touchesEnded: { action?() }
+        ) {
+          getTitleView(
+            with: isSecure,
+            text: text,
+            lineLimit: lineLimit
+          )
+        }
       }
       
       // Описание
       if case let .description(text, lineLimit, isSelectable, isSecure, action) = description,
          let text {
         TapGestureView(
-          content: AnyView(
-            Text(isSecure ? Constants.secureText : text)
-              .font(.fancy.b1)
-              .foregroundColor(.fancy.constant.slate)
-              .lineLimit(lineLimit)
-              .truncationMode(.middle)
-              .multilineTextAlignment(.center)
-          ),
           style: .animationZoomOut,
           isSelectable: isSelectable,
-          touchesEnded: {
-            action?()
-          }
-        )
+          touchesEnded: { action?() }
+        ) {
+          Text(isSecure ? Constants.secureText : text)
+            .font(.fancy.b1)
+            .foregroundColor(.fancy.constant.slate)
+            .lineLimit(lineLimit)
+            .truncationMode(.middle)
+            .multilineTextAlignment(.center)
+        }
         .padding(.top, .s2)
       }
     }

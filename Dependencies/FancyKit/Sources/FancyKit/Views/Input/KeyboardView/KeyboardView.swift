@@ -56,22 +56,21 @@ private extension KeyboardView {
     
     return AnyView(
       TapGestureView(
-        content: AnyView(
-          ZStack {
-            Color.fancy.constant.onyx
-            
-            Text(title)
-              .font(.fancy.largeTitle)
-              .foregroundColor(.fancy.constant.ghost)
-              .fontWeight(.bold)
-          }
-            .frame(width: buttonSize, height: buttonSize)
-            .clipShape(Circle())
-        ),
         style: .flash,
         isSelectable: isEnabled,
         touchesEnded: action
-      )
+      ) {
+        ZStack {
+          Color.fancy.constant.onyx
+          
+          Text(title)
+            .font(.fancy.largeTitle)
+            .foregroundColor(.fancy.constant.ghost)
+            .fontWeight(.bold)
+        }
+        .frame(width: buttonSize, height: buttonSize)
+        .clipShape(Circle())
+      }
     )
   }
   
@@ -101,22 +100,21 @@ private extension KeyboardView {
   func createRemoveButton(action: @escaping () -> Void) -> AnyView {
     AnyView(
       TapGestureView(
-        content: AnyView(
-          ZStack {
-            Color.fancy.constant.onyx
-            
-            Image(systemName: "delete.backward")
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(width: .s7, height: .s7)
-              .foregroundColor(.fancy.constant.ghost)
-          }
-            .frame(width: buttonSize, height: buttonSize)
-        ),
         style: .flash,
         isSelectable: isEnabled,
         touchesEnded: action
-      )
+      ) {
+        ZStack {
+          Color.fancy.constant.onyx
+          
+          Image(systemName: "delete.backward")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: .s7, height: .s7)
+            .foregroundColor(.fancy.constant.ghost)
+        }
+        .frame(width: buttonSize, height: buttonSize)
+      }
     )
   }
 }

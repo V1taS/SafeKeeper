@@ -45,32 +45,29 @@ private extension RoundButtonView {
   func createRoundButtonView() -> AnyView {
     AnyView(
       TapGestureView(
-        content: AnyView(
-          HStack(alignment: .center, spacing: .s2) {
-            if let image = style.image {
-              Image(uiImage: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: .s4, height: .s4)
-                .allowsHitTesting(false)
-            }
-            
-            Text(style.text)
-              .font(.fancy.b1Medium)
-              .foregroundColor(.fancy.constant.ghost)
-              .lineLimit(1)
-              .truncationMode(.tail)
-              .allowsHitTesting(false)
-              .multilineTextAlignment(.center)
-          }
-            .roundedEdge(backgroundColor: .fancy.constant.navy)
-        ),
         style: .animationZoomOut,
         isSelectable: isEnabled,
-        touchesEnded: {
-          action()
+        touchesEnded: { action() }
+      ) {
+        HStack(alignment: .center, spacing: .s2) {
+          if let image = style.image {
+            Image(uiImage: image)
+              .resizable()
+              .aspectRatio(contentMode: .fit)
+              .frame(width: .s4, height: .s4)
+              .allowsHitTesting(false)
+          }
+          
+          Text(style.text)
+            .font(.fancy.b1Medium)
+            .foregroundColor(.fancy.constant.ghost)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .allowsHitTesting(false)
+            .multilineTextAlignment(.center)
         }
-      )
+        .roundedEdge(backgroundColor: .fancy.constant.navy)
+      }
     )
   }
 }
